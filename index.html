@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-    <title>تسجيل الدخول | نظام حضور وانصراف الموظفين</title>
-    <!-- Google Fonts: Cairo -->
+    <title>Employee Attendance System | Login</title>
+    <!-- Google Fonts: Cairo for Arabic, Inter for English as primary -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <!-- Firebase SDKs -->
@@ -57,7 +57,7 @@
 
         body {
             background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Inter', 'Cairo', sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -96,6 +96,39 @@
             transform: none;
         }
         
+        /* Language switcher button */
+        .lang-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+        
+        .lang-btn {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(8px);
+            border: none;
+            border-radius: 40px;
+            padding: 8px 16px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Inter', 'Cairo', sans-serif;
+            transition: all 0.2s ease;
+        }
+        
+        .lang-btn:active {
+            transform: scale(0.96);
+        }
+        
+        .lang-btn i {
+            font-size: 0.9rem;
+        }
+        
         .logo-area {
             margin-bottom: 28px;
         }
@@ -128,7 +161,7 @@
 
         .form-group {
             margin-bottom: 18px;
-            text-align: right;
+            text-align: left;
             width: 100%;
         }
         
@@ -138,7 +171,7 @@
             font-weight: 600;
             margin-bottom: 8px;
             color: #334155;
-            text-align: right;
+            text-align: left;
         }
         
         .form-select, .form-input {
@@ -146,7 +179,7 @@
             padding: 14px 16px;
             border: 2px solid #e2e8f0;
             border-radius: 20px;
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Inter', 'Cairo', sans-serif;
             font-size: 0.95rem;
             font-weight: 500;
             background: #f8fafc;
@@ -177,7 +210,7 @@
             color: white;
             font-weight: 700;
             font-size: 1rem;
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Inter', 'Cairo', sans-serif;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -255,7 +288,7 @@
             border-radius: 24px;
             font-weight: 700;
             font-size: 1rem;
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Inter', 'Cairo', sans-serif;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -292,7 +325,7 @@
             justify-content: center;
             gap: 8px;
             margin-top: 16px;
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Inter', 'Cairo', sans-serif;
             transition: all 0.2s ease;
         }
         
@@ -343,7 +376,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Inter', 'Cairo', sans-serif;
         }
         
         .success-toast.show {
@@ -387,6 +420,14 @@
                 padding: 10px 20px;
                 bottom: 20px;
             }
+            .lang-switcher {
+                top: 12px;
+                right: 12px;
+            }
+            .lang-btn {
+                padding: 6px 12px;
+                font-size: 0.7rem;
+            }
         }
         
         /* منع أي انزلاق أفقي */
@@ -398,14 +439,146 @@
                 padding: 12px 14px;
             }
         }
+        
+        /* RTL support when Arabic is active */
+        body[dir="rtl"] .form-group,
+        body[dir="rtl"] .form-label {
+            text-align: right;
+        }
+        
+        body[dir="rtl"] .lang-switcher {
+            right: auto;
+            left: 20px;
+        }
+        
+        body[dir="rtl"] .login-card,
+        body[dir="rtl"] .employee-dashboard {
+            text-align: right;
+        }
+        
+        body[dir="rtl"] .form-label i {
+            margin-left: 6px;
+            margin-right: 0;
+        }
+        
+        body[dir="rtl"] .login-btn i,
+        body[dir="rtl"] .action-btn i,
+        body[dir="rtl"] .logout-btn i {
+            margin-left: 8px;
+            margin-right: 0;
+        }
+        
+        body[dir="rtl"] .actions-buttons {
+            flex-direction: row;
+        }
+        
+        @media (max-width: 550px) {
+            body[dir="rtl"] .actions-buttons {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
-<body>
+<body dir="ltr">
+    <div class="lang-switcher">
+        <button id="langToggleBtn" class="lang-btn">
+            <i class="fas fa-language"></i>
+            <span id="langBtnText">العربية</span>
+        </button>
+    </div>
 <div id="appRoot" class="login-container">
-    <div class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i> جاري تحميل البيانات...</div>
+    <div class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i> Loading data...</div>
 </div>
 
 <script>
+    // ===================== Language Management (English Primary) =====================
+    let currentLanguage = 'en'; // 'en' is primary
+    
+    const translations = {
+        en: {
+            loading: "Loading data...",
+            selectEmployee: "-- Select Employee --",
+            employeeLabel: "Employee Name",
+            branchLabel: "Branch",
+            passwordLabel: "Password (Access Code)",
+            loginBtn: "Login",
+            syncBadge: "Synced with Control Panel",
+            loginTitle: "Login",
+            loginSubtitle: "Employee Attendance System",
+            selectBranch: "-- Select Branch --",
+            loginSuccess: "Login successful",
+            welcome: "Welcome",
+            checkin: "Check In",
+            checkout: "Check Out",
+            logoutSystem: "Logout from System",
+            syncFooter: "Synced with Main Dashboard",
+            checkinSuccess: "Check-in successful, thank you",
+            checkoutSuccess: "Check-out successful, thank you",
+            langToggleAr: "العربية",
+            langToggleEn: "English"
+        },
+        ar: {
+            loading: "جاري تحميل البيانات...",
+            selectEmployee: "-- اختر اسم الموظف --",
+            employeeLabel: "اسم الموظف",
+            branchLabel: "الفرع",
+            passwordLabel: "كلمة المرور (رمز الدخول)",
+            loginBtn: "تسجيل الدخول",
+            syncBadge: "متزامن مع لوحة التحكم",
+            loginTitle: "تسجيل الدخول",
+            loginSubtitle: "نظام حضور وانصراف الموظفين",
+            selectBranch: "-- اختر الفرع --",
+            loginSuccess: "تم التسجيل بنجاح",
+            welcome: "مرحباً",
+            checkin: "تسجيل دخول",
+            checkout: "تسجيل خروج",
+            logoutSystem: "تسجيل خروج من النظام",
+            syncFooter: "متزامن مع لوحة التحكم الرئيسية",
+            checkinSuccess: "تم تسجيل الدخول بنجاح، شكراً لك",
+            checkoutSuccess: "تم تسجيل الخروج بنجاح، شكراً لك",
+            langToggleAr: "العربية",
+            langToggleEn: "English"
+        }
+    };
+    
+    function getText(key) {
+        return translations[currentLanguage][key] || translations.en[key] || key;
+    }
+    
+    function setLanguage(lang) {
+        currentLanguage = lang;
+        const htmlElement = document.documentElement;
+        const bodyElement = document.body;
+        
+        if (lang === 'ar') {
+            htmlElement.setAttribute('lang', 'ar');
+            bodyElement.setAttribute('dir', 'rtl');
+            document.title = "تسجيل الدخول | نظام حضور وانصراف الموظفين";
+        } else {
+            htmlElement.setAttribute('lang', 'en');
+            bodyElement.setAttribute('dir', 'ltr');
+            document.title = "Employee Attendance System | Login";
+        }
+        
+        // Update toggle button text
+        const langBtnText = document.getElementById('langBtnText');
+        if (langBtnText) {
+            langBtnText.textContent = lang === 'en' ? getText('langToggleAr') : getText('langToggleEn');
+        }
+        
+        // Re-render current screen if any
+        if (currentEmployee) {
+            renderEmployeeDashboard();
+        } else {
+            renderLoginScreen();
+        }
+    }
+    
+    function toggleLanguage() {
+        const newLang = currentLanguage === 'en' ? 'ar' : 'en';
+        setLanguage(newLang);
+    }
+    
     // ===================== بيانات المتاجر والموظفين (من Firebase) =====================
     let shopsData = [];
     
@@ -483,8 +656,8 @@
                 branchName: branchName,
                 type: type,
                 timestamp: now.toISOString(),
-                date: now.toLocaleDateString('ar-EG'),
-                time: now.toLocaleTimeString('ar-EG')
+                date: now.toLocaleDateString(currentLanguage === 'ar' ? 'ar-EG' : 'en-US'),
+                time: now.toLocaleTimeString(currentLanguage === 'ar' ? 'ar-EG' : 'en-US')
             };
             const attendanceRef = window.firebaseRef(window.firebaseDB, 'attendanceRecords');
             const newRecordRef = window.firebasePush(attendanceRef);
@@ -532,7 +705,7 @@
     // عرض شاشة تسجيل الدخول (بدون أي رسائل خطأ مرئية)
     function renderLoginScreen() {
         if (!shopsData.length) {
-            document.getElementById('appRoot').innerHTML = '<div class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i> جاري تحميل البيانات...</div>';
+            document.getElementById('appRoot').innerHTML = `<div class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i> ${getText('loading')}</div>`;
             return;
         }
         
@@ -551,7 +724,7 @@
             }
         });
         
-        let employeeOptions = '<option value="">-- اختر اسم الموظف --</option>';
+        let employeeOptions = `<option value="">${getText('selectEmployee')}</option>`;
         allEmployees.forEach(emp => {
             employeeOptions += `<option value="${emp.name}" data-branch-id="${emp.branchId}" data-branch-name="${emp.branchName}" data-access-code="${emp.accessCode}">${emp.name}</option>`;
         });
@@ -562,35 +735,35 @@
                     <div class="logo-icon">
                         <i class="fas fa-fingerprint"></i>
                     </div>
-                    <div class="app-title">تسجيل الدخول</div>
-                    <div class="app-subtitle">نظام حضور وانصراف الموظفين</div>
+                    <div class="app-title">${getText('loginTitle')}</div>
+                    <div class="app-subtitle">${getText('loginSubtitle')}</div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label"><i class="fas fa-user"></i> اسم الموظف</label>
+                    <label class="form-label"><i class="fas fa-user"></i> ${getText('employeeLabel')}</label>
                     <select id="employeeSelect" class="form-select">
                         ${employeeOptions}
                     </select>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label"><i class="fas fa-store"></i> الفرع</label>
+                    <label class="form-label"><i class="fas fa-store"></i> ${getText('branchLabel')}</label>
                     <select id="branchSelect" class="form-select" disabled>
-                        <option value="">-- اختر الفرع --</option>
+                        <option value="">${getText('selectBranch')}</option>
                     </select>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label"><i class="fas fa-lock"></i> كلمة المرور (رمز الدخول)</label>
-                    <input type="password" id="passwordInput" class="form-input password-input" placeholder="أدخل كلمة المرور الخاصة بك">
+                    <label class="form-label"><i class="fas fa-lock"></i> ${getText('passwordLabel')}</label>
+                    <input type="password" id="passwordInput" class="form-input password-input" placeholder="••••••">
                 </div>
                 
                 <button id="loginBtn" class="login-btn">
-                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                    <i class="fas fa-sign-in-alt"></i> ${getText('loginBtn')}
                 </button>
                 
                 <div class="sync-badge">
-                    <i class="fas fa-cloud-upload-alt"></i> متزامن مع لوحة التحكم
+                    <i class="fas fa-cloud-upload-alt"></i> ${getText('syncBadge')}
                 </div>
             </div>
         `;
@@ -609,7 +782,7 @@
                 branchSelect.innerHTML = `<option value="${branchId}" data-branch-name="${branchName}">${branchName}</option>`;
                 branchSelect.disabled = false;
             } else {
-                branchSelect.innerHTML = '<option value="">-- اختر الفرع --</option>';
+                branchSelect.innerHTML = `<option value="">${getText('selectBranch')}</option>`;
                 branchSelect.disabled = true;
             }
         });
@@ -626,12 +799,11 @@
             
             // التحقق من صحة البيانات بدون أي رسائل خطأ (صامت)
             if (!employeeName || !branchId || !expectedAccessCode || enteredPassword !== expectedAccessCode) {
-                // في حالة الخطأ لا يحدث شيء ولا تظهر أي رسالة
                 return;
             }
             
             // فقط عند النجاح تظهر رسالة "تم التسجيل بنجاح"
-            showSuccessMessage("تم التسجيل بنجاح");
+            showSuccessMessage(getText('loginSuccess'));
             
             const shop = shopsData.find(s => s.id == branchId);
             if (shop) {
@@ -655,7 +827,7 @@
                     <div class="employee-avatar">
                         <i class="fas fa-user-circle"></i>
                     </div>
-                    <div class="welcome-name">مرحباً ${currentEmployee.name}</div>
+                    <div class="welcome-name">${getText('welcome')} ${currentEmployee.name}</div>
                     <div class="branch-badge">
                         <i class="fas fa-store"></i> ${currentBranch.name}
                     </div>
@@ -663,19 +835,19 @@
                 
                 <div class="actions-buttons">
                     <button id="checkinBtn" class="action-btn checkin-btn">
-                        <i class="fas fa-sign-in-alt"></i> تسجيل دخول
+                        <i class="fas fa-sign-in-alt"></i> ${getText('checkin')}
                     </button>
                     <button id="checkoutBtn" class="action-btn checkout-btn">
-                        <i class="fas fa-sign-out-alt"></i> تسجيل خروج
+                        <i class="fas fa-sign-out-alt"></i> ${getText('checkout')}
                     </button>
                 </div>
                 
                 <button id="logoutFromDashboard" class="logout-btn">
-                    <i class="fas fa-arrow-right"></i> تسجيل خروج من النظام
+                    <i class="fas fa-arrow-right"></i> ${getText('logoutSystem')}
                 </button>
                 
                 <div class="sync-badge">
-                    <i class="fas fa-check-circle"></i> متزامن مع لوحة التحكم الرئيسية
+                    <i class="fas fa-check-circle"></i> ${getText('syncFooter')}
                 </div>
             </div>
         `;
@@ -684,13 +856,12 @@
         
         document.getElementById('checkinBtn').addEventListener('click', async () => {
             await saveAttendanceRecord(currentEmployee.name, currentBranch.name, 'دخول');
-            showSuccessMessage("تم تسجيل الدخول بنجاح، شكراً لك");
-            // لا نقوم بإعادة تحميل السجل لأنه غير موجود في هذه الواجهة
+            showSuccessMessage(getText('checkinSuccess'));
         });
         
         document.getElementById('checkoutBtn').addEventListener('click', async () => {
             await saveAttendanceRecord(currentEmployee.name, currentBranch.name, 'خروج');
-            showSuccessMessage("تم تسجيل الخروج بنجاح، شكراً لك");
+            showSuccessMessage(getText('checkoutSuccess'));
         });
         
         document.getElementById('logoutFromDashboard').addEventListener('click', () => {
@@ -730,6 +901,12 @@
     const startApplication = async () => {
         if (appStarted) return;
         appStarted = true;
+        
+        // Set language toggle event
+        const toggleBtn = document.getElementById('langToggleBtn');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', toggleLanguage);
+        }
         
         try {
             const savedShops = await loadShopsFromFirebase();
