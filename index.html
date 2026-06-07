@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>تسجيل الدخول | نظام حضور وانصراف الموظفين</title>
+    <!-- Apple SF Pro Font + Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* بطاقة تسجيل الدخول الرئيسية */
+        .login-card {
+            background: white;
+            border-radius: 56px;
+            padding: 40px 32px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            text-align: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-area {
+            margin-bottom: 32px;
+        }
+        .logo-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 2.5rem;
+            color: white;
+        }
+        .app-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1c1c1e;
+            margin-bottom: 6px;
+        }
+        .app-subtitle {
+            font-size: 0.85rem;
+            color: #6c6c70;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #3a3a3c;
+            text-align: right;
+        }
+        .form-select, .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1.5px solid #e5e5ea;
+            border-radius: 32px;
+            font-family: inherit;
+            font-size: 1rem;
+            background: #f9f9fc;
+            outline: none;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .form-select:focus, .form-input:focus {
+            border-color: #667eea;
+            background: white;
+        }
+        .password-input {
+            direction: ltr;
+            text-align: left;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 44px;
+            padding: 16px;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 16px;
+        }
+        .login-btn:active {
+            transform: scale(0.97);
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 28px;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        /* بعد تسجيل الدخول - شاشة الموظف */
+        .employee-dashboard {
+            background: white;
+            border-radius: 56px;
+            padding: 32px 28px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            animation: fadeIn 0.3s ease-out;
+        }
+        .employee-header {
+            text-align: center;
+            border-bottom: 1.5px solid #e9e9ef;
+            padding-bottom: 20px;
+            margin-bottom: 24px;
+        }
+        .employee-avatar {
+            background: #f2f2f7;
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 2.5rem;
+            color: #667eea;
+        }
+        .welcome-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .branch-badge {
+            background: #f2f2f7;
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            color: #6c6c70;
+        }
+        .last-record {
+            background: #f8f9fc;
+            border-radius: 28px;
+            padding: 14px;
+            margin-bottom: 24px;
+            font-size: 0.8rem;
+            text-align: center;
+            color: #3a3a3c;
+        }
+
+        .actions-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .action-btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 44px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.2s;
+        }
+        .action-btn:active {
+            transform: scale(0.97);
+        }
+        .checkin-btn {
+            background: #34c759;
+            color: white;
+        }
+        .checkout-btn {
+            background: #ff3b30;
+            color: white;
+        }
+        .logout-btn {
+            width: 100%;
+            background: #f2f2f5;
+            border: none;
+            border-radius: 44px;
+            padding: 14px;
+            color: #007aff;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .history-list {
+            margin-top: 20px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        .history-item {
+            background: #f9f9fc;
+            border-radius: 24px;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            border-right: 4px solid #667eea;
+        }
+        .history-type {
+            font-weight: 700;
+        }
+        .history-type.checkin { color: #34c759; }
+        .history-type.checkout { color: #ff3b30; }
+        .history-time {
+            color: #6c6c70;
+            direction: ltr;
+        }
+        .sync-badge {
+            font-size: 0.7rem;
+            color: #34c759;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        @media (max-width: 550px) {
+            .login-card, .employee-dashboard {
+                padding: 28px 20px;
+            }
+            .actions-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="appRoot" class="login-container"></div>
+
+<script>
+    // ===================== البيانات المحلية التجريبية (تعمل فوراً) =====================
+    // هذه البيانات تظهر مباشرة بدون انتظار Firebase
+    
+    let shopsData = [
+        { id: 1, name: "متجر الأندلس", icon: "fas fa-crown", desc: "أفخر التشكيلات", employees: [
+            { name: "أحمد الشجاع", entryBase: "08:30", exitBase: "16:30", entryLabel: "08:30 صباحاً", exitLabel: "04:30 مساءً" },
+            { name: "سارة المنصور", entryBase: "09:00", exitBase: "17:00", entryLabel: "09:00 صباحاً", exitLabel: "05:00 مساءً" },
+            { name: "يوسف الحمادي", entryBase: "08:45", exitBase: "16:45", entryLabel: "08:45 صباحاً", exitLabel: "04:45 مساءً" },
+            { name: "نورة السبيعي", entryBase: "10:00", exitBase: "18:00", entryLabel: "10:00 صباحاً", exitLabel: "06:00 مساءً" }
+        ]},
+        { id: 2, name: "رواد الخليج", icon: "fas fa-ship", desc: "ريادة في البحر", employees: [
+            { name: "خالد النقبي", entryBase: "07:30", exitBase: "15:30", entryLabel: "07:30 صباحاً", exitLabel: "03:30 مساءً" },
+            { name: "لينا العتيبي", entryBase: "08:00", exitBase: "16:00", entryLabel: "08:00 صباحاً", exitLabel: "04:00 مساءً" },
+            { name: "عمر القحطاني", entryBase: "09:15", exitBase: "17:15", entryLabel: "09:15 صباحاً", exitLabel: "05:15 مساءً" },
+            { name: "هدى الرشيد", entryBase: "08:30", exitBase: "16:30", entryLabel: "08:30 صباحاً", exitLabel: "04:30 مساءً" }
+        ]},
+        { id: 3, name: "زهور الشجاع", icon: "fas fa-leaf", desc: "طبيعة ورفاهية", employees: [
+            { name: "ريم الهاجري", entryBase: "08:00", exitBase: "16:00", entryLabel: "08:00 صباحاً", exitLabel: "04:00 مساءً" },
+            { name: "ناصر العتيق", entryBase: "09:00", exitBase: "17:00", entryLabel: "09:00 صباحاً", exitLabel: "05:00 مساءً" },
+            { name: "منى الدوسري", entryBase: "07:45", exitBase: "15:45", entryLabel: "07:45 صباحاً", exitLabel: "03:45 مساءً" },
+            { name: "فهد الشمري", entryBase: "10:30", exitBase: "18:30", entryLabel: "10:30 صباحاً", exitLabel: "06:30 مساءً" }
+        ]},
+        { id: 4, name: "الدرة بلازا", icon: "fas fa-gem", desc: "فخامة وتميز", employees: [
+            { name: "جمال السالم", entryBase: "08:15", exitBase: "16:15", entryLabel: "08:15 صباحاً", exitLabel: "04:15 مساءً" },
+            { name: "هبة العبيد", entryBase: "09:30", exitBase: "17:30", entryLabel: "09:30 صباحاً", exitLabel: "05:30 مساءً" },
+            { name: "سعد المطيري", entryBase: "08:45", exitBase: "16:45", entryLabel: "08:45 صباحاً", exitLabel: "04:45 مساءً" },
+            { name: "علا الحربي", entryBase: "10:00", exitBase: "18:00", entryLabel: "10:00 صباحاً", exitLabel: "06:00 مساءً" }
+        ]},
+        { id: 5, name: "نخبة الشرق", icon: "fas fa-chart-line", desc: "ريادة أعمال", employees: [
+            { name: "ماجد الشهراني", entryBase: "07:00", exitBase: "15:00", entryLabel: "07:00 صباحاً", exitLabel: "03:00 مساءً" },
+            { name: "نوال الغامدي", entryBase: "08:20", exitBase: "16:20", entryLabel: "08:20 صباحاً", exitLabel: "04:20 مساءً" },
+            { name: "فيصل الزهراني", entryBase: "09:10", exitBase: "17:10", entryLabel: "09:10 صباحاً", exitLabel: "05:10 مساءً" },
+            { name: "شوق المالكي", entryBase: "08:50", exitBase: "16:50", entryLabel: "08:50 صباحاً", exitLabel: "04:50 مساءً" }
+        ]},
+        { id: 6, name: "قمة الشجاع", icon: "fas fa-mountain", desc: "أعلى القمم", employees: [
+            { name: "تركي العتيبي", entryBase: "08:00", exitBase: "16:00", entryLabel: "08:00 صباحاً", exitLabel: "04:00 مساءً" },
+            { name: "جواهر القاسم", entryBase: "09:15", exitBase: "17:15", entryLabel: "09:15 صباحاً", exitLabel: "05:15 مساءً" },
+            { name: "بندر السهلي", entryBase: "07:45", exitBase: "15:45", entryLabel: "07:45 صباحاً", exitLabel: "03:45 مساءً" },
+            { name: "دلال السعدون", entryBase: "10:15", exitBase: "18:15", entryLabel: "10:15 صباحاً", exitLabel: "06:15 مساءً" }
+        ]}
+    ];
+    
+    // سجل الحضور والانصراف (سيتم تخزينه في localStorage مؤقتاً)
+    let attendanceRecords = [];
+    
+    // كلمة المرور الافتراضية
+    const DEFAULT_PASSWORD = "123456";
+    
+    let currentEmployee = null;
+    let currentBranch = null;
+    
+    // تحميل السجل من localStorage
+    function loadAttendanceFromStorage() {
+        const stored = localStorage.getItem('attendanceRecords');
+        if (stored) {
+            try {
+                attendanceRecords = JSON.parse(stored);
+            } catch(e) {}
+        }
+    }
+    
+    // حفظ السجل في localStorage
+    function saveAttendanceToStorage() {
+        localStorage.setItem('attendanceRecords', JSON.stringify(attendanceRecords));
+    }
+    
+    // تسجيل دخول/خروج
+    function addAttendanceRecord(employeeName, branchName, type) {
+        const now = new Date();
+        const record = {
+            id: Date.now(),
+            employeeName: employeeName,
+            branchName: branchName,
+            type: type,
+            timestamp: now.toISOString(),
+            date: now.toLocaleDateString('ar-EG'),
+            time: now.toLocaleTimeString('ar-EG')
+        };
+        attendanceRecords.unshift(record); // الأحدث أولاً
+        saveAttendanceToStorage();
+        return record;
+    }
+    
+    // الحصول على سجل موظف معين
+    function getEmployeeHistory(employeeName, branchName) {
+        return attendanceRecords.filter(r => r.employeeName === employeeName && r.branchName === branchName);
+    }
+    
+    // عرض شاشة تسجيل الدخول
+    function renderLoginScreen() {
+        // تجميع جميع الموظفين من جميع المتاجر
+        let allEmployees = [];
+        shopsData.forEach(shop => {
+            shop.employees.forEach(emp => {
+                allEmployees.push({
+                    name: emp.name,
+                    branchId: shop.id,
+                    branchName: shop.name
+                });
+            });
+        });
+        
+        let employeeOptions = '<option value="">-- اختر اسم الموظف --</option>';
+        allEmployees.forEach(emp => {
+            employeeOptions += `<option value="${emp.name}" data-branch-id="${emp.branchId}" data-branch-name="${emp.branchName}">${emp.name}</option>`;
+        });
+        
+        const html = `
+            <div class="login-card">
+                <div class="logo-area">
+                    <div class="logo-icon">
+                        <i class="fas fa-fingerprint"></i>
+                    </div>
+                    <div class="app-title">تسجيل الدخول</div>
+                    <div class="app-subtitle">نظام حضور وانصراف الموظفين</div>
+                </div>
+                
+                <div class="error-message" id="errorMsg"></div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-user"></i> اسم الموظف</label>
+                    <select id="employeeSelect" class="form-select">
+                        ${employeeOptions}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-store"></i> الفرع</label>
+                    <select id="branchSelect" class="form-select" disabled>
+                        <option value="">-- اختر الفرع --</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-lock"></i> كلمة المرور</label>
+                    <input type="password" id="passwordInput" class="form-input password-input" placeholder="كلمة المرور: 123456">
+                </div>
+                
+                <button id="loginBtn" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                </button>
+                <div class="sync-badge">
+                    <i class="fas fa-database"></i> نظام متكامل | كلمة المرور: 123456
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('appRoot').innerHTML = html;
+        
+        const employeeSelect = document.getElementById('employeeSelect');
+        const branchSelect = document.getElementById('branchSelect');
+        
+        employeeSelect.addEventListener('change', () => {
+            const selectedOption = employeeSelect.options[employeeSelect.selectedIndex];
+            const branchId = selectedOption.getAttribute('data-branch-id');
+            const branchName = selectedOption.getAttribute('data-branch-name');
+            
+            if (branchId && branchName) {
+                branchSelect.innerHTML = `<option value="${branchId}" data-branch-name="${branchName}">${branchName}</option>`;
+                branchSelect.disabled = false;
+            } else {
+                branchSelect.innerHTML = '<option value="">-- اختر الفرع --</option>';
+                branchSelect.disabled = true;
+            }
+        });
+        
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            const employeeName = employeeSelect.value;
+            const branchSelectElem = document.getElementById('branchSelect');
+            const branchId = branchSelectElem.value;
+            const branchName = branchSelectElem.options[branchSelectElem.selectedIndex]?.getAttribute('data-branch-name');
+            const password = document.getElementById('passwordInput').value;
+            const errorDiv = document.getElementById('errorMsg');
+            
+            if (!employeeName) {
+                errorDiv.style.display = 'block';
+                errorDiv.innerText = '❌ الرجاء اختيار اسم الموظف';
+                return;
+            }
+            if (!branchId) {
+                errorDiv.style.display = 'block';
+                errorDiv.innerText = '❌ الرجاء اختيار الفرع';
+                return;
+            }
+            if (password !== DEFAULT_PASSWORD) {
+                errorDiv.style.display = 'block';
+                errorDiv.innerText = '❌ كلمة المرور غير صحيحة (كلمة المرور الصحيحة: 123456)';
+                return;
+            }
+            
+            errorDiv.style.display = 'none';
+            
+            const shop = shopsData.find(s => s.id == branchId);
+            if (shop) {
+                const employee = shop.employees.find(e => e.name === employeeName);
+                if (employee) {
+                    currentEmployee = { ...employee, branchName: branchName, branchId: branchId };
+                    currentBranch = { id: branchId, name: branchName };
+                    renderEmployeeDashboard();
+                }
+            }
+        });
+    }
+    
+    // عرض لوحة تحكم الموظف
+    function renderEmployeeDashboard() {
+        if (!currentEmployee) return;
+        
+        const history = getEmployeeHistory(currentEmployee.name, currentBranch.name);
+        const lastRecord = history.length > 0 ? history[0] : null;
+        
+        let historyHtml = '';
+        history.slice(0, 15).forEach(record => {
+            historyHtml += `
+                <div class="history-item">
+                    <span class="history-type ${record.type === 'دخول' ? 'checkin' : 'checkout'}">
+                        <i class="fas ${record.type === 'دخول' ? 'fa-sign-in-alt' : 'fa-sign-out-alt'}"></i> ${record.type}
+                    </span>
+                    <span class="history-time">${record.date} | ${record.time}</span>
+                </div>
+            `;
+        });
+        
+        if (historyHtml === '') {
+            historyHtml = '<div style="text-align:center; padding:20px; color:#8e8e93;">لا توجد سجلات بعد</div>';
+        }
+        
+        const html = `
+            <div class="employee-dashboard">
+                <div class="employee-header">
+                    <div class="employee-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="welcome-name">مرحباً ${currentEmployee.name}</div>
+                    <div class="branch-badge">
+                        <i class="fas fa-store"></i> ${currentBranch.name}
+                    </div>
+                </div>
+                
+                ${lastRecord ? `
+                <div class="last-record">
+                    <i class="fas fa-history"></i> آخر تسجيل: 
+                    <strong>${lastRecord.type}</strong> بتاريخ ${lastRecord.date} الساعة ${lastRecord.time}
+                </div>
+                ` : '<div class="last-record">لا توجد تسجيلات سابقة</div>'}
+                
+                <div class="actions-buttons">
+                    <button id="checkinBtn" class="action-btn checkin-btn">
+                        <i class="fas fa-sign-in-alt"></i> تسجيل دخول
+                    </button>
+                    <button id="checkoutBtn" class="action-btn checkout-btn">
+                        <i class="fas fa-sign-out-alt"></i> تسجيل خروج
+                    </button>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <div style="font-weight: 600; margin-bottom: 12px;">
+                        <i class="fas fa-list-ul"></i> سجل الحضور والانصراف
+                    </div>
+                    <div class="history-list">
+                        ${historyHtml}
+                    </div>
+                </div>
+                
+                <button id="logoutFromDashboard" class="logout-btn">
+                    <i class="fas fa-arrow-right"></i> تسجيل خروج من النظام
+                </button>
+            </div>
+        `;
+        
+        document.getElementById('appRoot').innerHTML = html;
+        
+        document.getElementById('checkinBtn').addEventListener('click', () => {
+            addAttendanceRecord(currentEmployee.name, currentBranch.name, 'دخول');
+            renderEmployeeDashboard();
+        });
+        
+        document.getElementById('checkoutBtn').addEventListener('click', () => {
+            addAttendanceRecord(currentEmployee.name, currentBranch.name, 'خروج');
+            renderEmployeeDashboard();
+        });
+        
+        document.getElementById('logoutFromDashboard').addEventListener('click', () => {
+            currentEmployee = null;
+            currentBranch = null;
+            renderLoginScreen();
+        });
+    }
+    
+    // ===================== دعم Firebase (اختياري، يعمل في الخلفية) =====================
+    // تحميل Firebase بشكل غير متزامن دون تعطيل التطبيق
+    function initFirebaseInBackground() {
+        const script = document.createElement('script');
+        script.type = 'module';
+        script.innerHTML = `
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+            import { getDatabase, ref, set, get, push, onValue } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
+            
+            const firebaseConfig = {
+                apiKey: "AIzaSyDrdXTVxCS5H_W22viYPijFyTuUb1M1uiY",
+                authDomain: "alialshugaa-6aff4.firebaseapp.com",
+                projectId: "alialshugaa-6aff4",
+                storageBucket: "alialshugaa-6aff4.firebasestorage.app",
+                messagingSenderId: "519493631770",
+                appId: "1:519493631770:web:4cc3bc2c65a46aa0f276a3",
+                measurementId: "G-56TX04Y4HE",
+                databaseURL: "https://alialshugaa-6aff4-default-rtdb.firebaseio.com/"
+            };
+            
+            const app = initializeApp(firebaseConfig);
+            const database = getDatabase(app);
+            
+            // مزامنة البيانات المحلية مع Firebase
+            window.syncToFirebase = async function(shopsData, attendanceRecords) {
+                const shopsRef = ref(database, 'shopsData');
+                await set(shopsRef, shopsData);
+                const attendanceRef = ref(database, 'attendanceRecords');
+                await set(attendanceRef, attendanceRecords);
+                console.log("✅ تمت المزامنة مع Firebase");
+            };
+            
+            window.loadFromFirebase = async function() {
+                const shopsRef = ref(database, 'shopsData');
+                const attendanceRef = ref(database, 'attendanceRecords');
+                const shopsSnap = await get(shopsRef);
+                const attendanceSnap = await get(attendanceRef);
+                if (shopsSnap.exists()) {
+                    window._fbShopsData = shopsSnap.val();
+                }
+                if (attendanceSnap.exists()) {
+                    window._fbAttendance = attendanceSnap.val();
+                }
+            };
+            
+            window.firebaseReady = true;
+            console.log("✅ Firebase جاهز في الخلفية");
+        `;
+        document.head.appendChild(script);
+    }
+    
+    // بدء التطبيق فوراً بالبيانات المحلية
+    loadAttendanceFromStorage();
+    renderLoginScreen();
+    initFirebaseInBackground(); // تحميل Firebase في الخلفية دون انتظار
+    
+    // محاولة تحميل بيانات من Firebase إن وجدت (للتكامل مع لوحة التحكم)
+    setTimeout(async () => {
+        if (window._fbShopsData && window._fbShopsData.length) {
+            shopsData = window._fbShopsData;
+            renderLoginScreen();
+        }
+        if (window._fbAttendance && window._fbAttendance.length) {
+            attendanceRecords = window._fbAttendance;
+            saveAttendanceToStorage();
+        }
+    }, 3000);
+</script>
+</body>
+</html>
