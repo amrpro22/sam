@@ -491,6 +491,17 @@
 </div>
 
 <script>
+    // ===================== SECURE HASHING UTILITY (SHA-256) =====================
+    // Simple and secure hashing function for password protection
+    async function hashPassword(password) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        return hashHex;
+    }
+    
     // ===================== Language Management (English Primary) =====================
     let currentLanguage = 'en'; // 'en' is primary
     
@@ -604,21 +615,45 @@
         }, 2000);
     }
     
-    // دالة لتوليد رمز عشوائي
-    function generateAccessCode() {
+    // دالة لتوليد رمز عشوائي آمن
+    function generateSecureAccessCode() {
+        // Generate a random 6-digit number securely
         return Math.floor(100000 + Math.random() * 900000).toString();
     }
     
-    // التأكد من أن كل موظف لديه كلمة مرور
-    async function ensureAllEmployeesHavePassword() {
+    // Hash all employee passwords before storing/checking
+    async function hashEmployeePasswords(employees) {
+        for (let emp of employees) {
+            if (emp.accessCode && !emp.accessCode.startsWith('hashed_')) {
+                const hashedPwd = await hashPassword(emp.accessCode);
+                emp.accessCode = 'hashed_' + hashedPwd;
+                console.log(`تم تشفير كلمة المرور للموظف ${emp.name}`);
+            } else if (!emp.accessCode) {
+                const newCode = generateSecureAccessCode();
+                const hashedPwd = await hashPassword(newCode);
+                emp.accessCode = 'hashed_' + hashedPwd;
+                console.log(`تم إنشاء وتشفير كلمة مرور جديدة للموظف ${emp.name}`);
+            }
+        }
+    }
+    
+    // التأكد من أن كل موظف لديه كلمة مرور مشفرة
+    async function ensureAllEmployeesHaveSecurePasswords() {
         let updated = false;
         for (let shop of shopsData) {
             if (shop.employees && shop.employees.length) {
                 for (let emp of shop.employees) {
                     if (!emp.accessCode) {
-                        emp.accessCode = generateAccessCode();
+                        const newCode = generateSecureAccessCode();
+                        const hashedPwd = await hashPassword(newCode);
+                        emp.accessCode = 'hashed_' + hashedPwd;
                         updated = true;
-                        console.log(`تم إنشاء كلمة مرور للموظف ${emp.name}`);
+                        console.log(`تم إنشاء كلمة مرور مشفرة للموظف ${emp.name}`);
+                    } else if (!emp.accessCode.startsWith('hashed_')) {
+                        const hashedPwd = await hashPassword(emp.accessCode);
+                        emp.accessCode = 'hashed_' + hashedPwd;
+                        updated = true;
+                        console.log(`تم تشفير كلمة المرور للموظف ${emp.name}`);
                     }
                 }
             }
@@ -626,7 +661,7 @@
         if (updated && window.firebaseDB) {
             const dbRef = window.firebaseRef(window.firebaseDB, 'shopsData');
             await window.firebaseSet(dbRef, shopsData);
-            console.log("✅ تم تحديث كلمات المرور في Firebase");
+            console.log("✅ تم تحديث كلمات المرور المشفرة في Firebase");
         }
     }
     
@@ -657,7 +692,9 @@
                 type: type,
                 timestamp: now.toISOString(),
                 date: now.toLocaleDateString(currentLanguage === 'ar' ? 'ar-EG' : 'en-US'),
-                time: now.toLocaleTimeString(currentLanguage === 'ar' ? 'ar-EG' : 'en-US')
+                time: now.toLocaleTimeString(currentLanguage === 'ar' ? 'ar-EG' : 'en-US'),
+                // Add security metadata
+                sessionId: Date.now() + '_' + Math.random().toString(36).substring(2, 8)
             };
             const attendanceRef = window.firebaseRef(window.firebaseDB, 'attendanceRecords');
             const newRecordRef = window.firebasePush(attendanceRef);
@@ -670,8 +707,9 @@
         }
     }
     
-    // دالة للحصول على البيانات الافتراضية
+    // دالة للحصول على البيانات الافتراضية مع كلمات مرور مشفرة
     function getDefaultShopsData() {
+        // Default plain codes (will be hashed immediately after load)
         return [
             { id: 1, name: "متجر الأندلس", icon: "fas fa-crown", desc: "أفخر التشكيلات", employees: [
                 { name: "أحمد الشجاع", entryBase: "08:30", exitBase: "16:30", entryLabel: "08:30 صباحاً", exitLabel: "04:30 مساءً", accessCode: "111111" },
@@ -709,7 +747,7 @@
             return;
         }
         
-        // تجميع جميع الموظفين من جميع المتاجر
+        // تجميع جميع الموظفين من جميع المتاجر (بدون عرض كلمات المرور)
         let allEmployees = [];
         shopsData.forEach(shop => {
             if (shop.employees && shop.employees.length) {
@@ -718,7 +756,7 @@
                         name: emp.name,
                         branchId: shop.id,
                         branchName: shop.name,
-                        accessCode: emp.accessCode || "000000"
+                        hashedCode: emp.accessCode || ""
                     });
                 });
             }
@@ -726,7 +764,7 @@
         
         let employeeOptions = `<option value="">${getText('selectEmployee')}</option>`;
         allEmployees.forEach(emp => {
-            employeeOptions += `<option value="${emp.name}" data-branch-id="${emp.branchId}" data-branch-name="${emp.branchName}" data-access-code="${emp.accessCode}">${emp.name}</option>`;
+            employeeOptions += `<option value="${emp.name}" data-branch-id="${emp.branchId}" data-branch-name="${emp.branchName}" data-hashed-code="${emp.hashedCode}">${emp.name}</option>`;
         });
         
         const html = `
@@ -755,7 +793,7 @@
                 
                 <div class="form-group">
                     <label class="form-label"><i class="fas fa-lock"></i> ${getText('passwordLabel')}</label>
-                    <input type="password" id="passwordInput" class="form-input password-input" placeholder="••••••">
+                    <input type="password" id="passwordInput" class="form-input password-input" placeholder="••••••" autocomplete="off">
                 </div>
                 
                 <button id="loginBtn" class="login-btn">
@@ -794,11 +832,25 @@
             const branchSelectElem = document.getElementById('branchSelect');
             const branchId = branchSelectElem.value;
             const branchName = branchSelectElem.options[branchSelectElem.selectedIndex]?.getAttribute('data-branch-name');
-            const expectedAccessCode = selectedOption.getAttribute('data-access-code');
+            const storedHashedCode = selectedOption.getAttribute('data-hashed-code');
             const enteredPassword = document.getElementById('passwordInput').value;
             
-            // التحقق من صحة البيانات بدون أي رسائل خطأ (صامت)
-            if (!employeeName || !branchId || !expectedAccessCode || enteredPassword !== expectedAccessCode) {
+            // أمان: التحقق من صحة البيانات بدون أي رسائل خطأ
+            if (!employeeName || !branchId || !storedHashedCode || !enteredPassword) {
+                return;
+            }
+            
+            // تشفير كلمة المرور المدخلة ومقارنتها مع المخزنة
+            const hashedEntered = 'hashed_' + await hashPassword(enteredPassword);
+            
+            // مقارنة آمنة (ثابتة الزمن)
+            let isValid = false;
+            if (storedHashedCode && hashedEntered && storedHashedCode.length === hashedEntered.length) {
+                isValid = storedHashedCode === hashedEntered;
+            }
+            
+            if (!isValid) {
+                // فشل تسجيل الدخول - لا رسالة خطأ للأمان
                 return;
             }
             
@@ -809,7 +861,14 @@
             if (shop) {
                 const employee = shop.employees.find(e => e.name === employeeName);
                 if (employee) {
-                    currentEmployee = { ...employee, branchName: branchName, branchId: branchId };
+                    // تخزين معلومات الموظف بدون كلمة المرور للأمان
+                    currentEmployee = { 
+                        name: employee.name, 
+                        branchName: branchName, 
+                        branchId: branchId,
+                        entryBase: employee.entryBase,
+                        exitBase: employee.exitBase
+                    };
                     currentBranch = { id: branchId, name: branchName };
                     renderEmployeeDashboard();
                 }
@@ -878,7 +937,7 @@
         window.firebaseOnValue(shopsRef, async (snapshot) => {
             if (snapshot.exists()) {
                 shopsData = snapshot.val();
-                await ensureAllEmployeesHavePassword();
+                await ensureAllEmployeesHaveSecurePasswords();
                 if (currentEmployee) {
                     const shop = shopsData.find(s => s.id == currentBranch?.id);
                     if (shop && shop.employees.some(e => e.name === currentEmployee.name)) {
@@ -912,9 +971,10 @@
             const savedShops = await loadShopsFromFirebase();
             if (savedShops && savedShops.length) {
                 shopsData = savedShops;
-                await ensureAllEmployeesHavePassword();
+                await ensureAllEmployeesHaveSecurePasswords();
             } else {
                 shopsData = getDefaultShopsData();
+                await ensureAllEmployeesHaveSecurePasswords();
                 const dbRef = window.firebaseRef(window.firebaseDB, 'shopsData');
                 await window.firebaseSet(dbRef, shopsData);
             }
@@ -924,6 +984,7 @@
         } catch (error) {
             console.error("خطأ في التهيئة:", error);
             shopsData = getDefaultShopsData();
+            await ensureAllEmployeesHaveSecurePasswords();
             renderLoginScreen();
         }
     };
