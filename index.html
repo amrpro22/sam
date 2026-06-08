@@ -224,7 +224,7 @@
             transform: scale(0.98);
         }
 
-        /* شاشة الموظف بعد تسجيل الدخول - بدون سجل الحضور */
+        /* شاشة الموظف بعد تسجيل الدخول - مع حقل عرض الملاحظات */
         .employee-dashboard {
             background: white;
             border-radius: 32px;
@@ -273,11 +273,56 @@
             color: #4361ee;
         }
         
+        /* حقل عرض الملاحظات - بطاقة مميزة */
+        .notes-display-card {
+            background: linear-gradient(135deg, #fff9e6, #fff3d1);
+            border-right: 5px solid #ff9800;
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .notes-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: #e67e22;
+            font-weight: 800;
+            font-size: 0.85rem;
+        }
+        
+        .notes-header i {
+            font-size: 1rem;
+            background: #ff9800;
+            color: white;
+            padding: 5px;
+            border-radius: 50%;
+        }
+        
+        .notes-content {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #5d3a1a;
+            line-height: 1.5;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        
+        .notes-empty {
+            color: #b7791f;
+            opacity: 0.7;
+            font-style: italic;
+            font-size: 0.85rem;
+        }
+        
         /* منطقة الأزرار فقط */
         .actions-buttons {
             display: flex;
             gap: 16px;
-            margin: 24px 0 20px 0;
+            margin: 0 0 20px 0;
             flex-direction: row;
         }
         
@@ -384,6 +429,34 @@
             transform: translateX(-50%) scale(1);
         }
         
+        /* رسالة وصول ملاحظة جديدة */
+        .note-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #ff9800;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            white-space: nowrap;
+        }
+        
+        .note-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
         /* تثبيت التصميم للشاشات الصغيرة جدًا */
         @media (max-width: 550px) {
             body {
@@ -419,6 +492,13 @@
                 font-size: 0.85rem;
                 padding: 10px 20px;
                 bottom: 20px;
+            }
+            .note-toast {
+                white-space: normal;
+                text-align: center;
+                max-width: 90%;
+                font-size: 0.75rem;
+                top: 10px;
             }
             .lang-switcher {
                 top: 12px;
@@ -492,7 +572,6 @@
 
 <script>
     // ===================== SECURE HASHING UTILITY (SHA-256) =====================
-    // Simple and secure hashing function for password protection
     async function hashPassword(password) {
         const encoder = new TextEncoder();
         const data = encoder.encode(password);
@@ -503,7 +582,7 @@
     }
     
     // ===================== Language Management (English Primary) =====================
-    let currentLanguage = 'en'; // 'en' is primary
+    let currentLanguage = 'en';
     
     const translations = {
         en: {
@@ -526,7 +605,9 @@
             checkinSuccess: "Check-in successful, thank you",
             checkoutSuccess: "Check-out successful, thank you",
             langToggleAr: "العربية",
-            langToggleEn: "English"
+            langToggleEn: "English",
+            notesTitle: "📢 Notices & Alerts",
+            noNotes: "No new notices"
         },
         ar: {
             loading: "جاري تحميل البيانات...",
@@ -548,7 +629,9 @@
             checkinSuccess: "تم تسجيل الدخول بنجاح، شكراً لك",
             checkoutSuccess: "تم تسجيل الخروج بنجاح، شكراً لك",
             langToggleAr: "العربية",
-            langToggleEn: "English"
+            langToggleEn: "English",
+            notesTitle: "📢 تنبيهات وملاحظات",
+            noNotes: "لا توجد تنبيهات جديدة"
         }
     };
     
@@ -571,13 +654,11 @@
             document.title = "Employee Attendance System | Login";
         }
         
-        // Update toggle button text
         const langBtnText = document.getElementById('langBtnText');
         if (langBtnText) {
             langBtnText.textContent = lang === 'en' ? getText('langToggleAr') : getText('langToggleEn');
         }
         
-        // Re-render current screen if any
         if (currentEmployee) {
             renderEmployeeDashboard();
         } else {
@@ -592,12 +673,14 @@
     
     // ===================== بيانات المتاجر والموظفين (من Firebase) =====================
     let shopsData = [];
-    
-    // المستخدم الحالي
     let currentEmployee = null;
     let currentBranch = null;
     
-    // دالة عرض رسالة نجاح فقط (تم التسجيل بنجاح - بدون أي رسائل خطأ)
+    // متغير لتخزين آخر ملاحظة تم عرضها للموظف الحالي
+    let currentEmployeeNote = "";
+    let noteUnsubscribe = null;
+    
+    // دالة عرض رسالة نجاح فقط
     function showSuccessMessage(message) {
         const existingToast = document.querySelector('.success-toast');
         if (existingToast) existingToast.remove();
@@ -615,29 +698,41 @@
         }, 2000);
     }
     
-    // دالة لتوليد رمز عشوائي آمن
+    // دالة عرض رسالة عند وصول ملاحظة جديدة
+    function showNoteAlert(message) {
+        const existingToast = document.querySelector('.note-toast');
+        if (existingToast) existingToast.remove();
+        
+        const toast = document.createElement('div');
+        toast.className = 'note-toast';
+        toast.innerHTML = `<i class="fas fa-bell"></i> ${message}`;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => toast.classList.add('show'), 10);
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 4000);
+    }
+    
     function generateSecureAccessCode() {
-        // Generate a random 6-digit number securely
         return Math.floor(100000 + Math.random() * 900000).toString();
     }
     
-    // Hash all employee passwords before storing/checking
     async function hashEmployeePasswords(employees) {
         for (let emp of employees) {
             if (emp.accessCode && !emp.accessCode.startsWith('hashed_')) {
                 const hashedPwd = await hashPassword(emp.accessCode);
                 emp.accessCode = 'hashed_' + hashedPwd;
-                console.log(`تم تشفير كلمة المرور للموظف ${emp.name}`);
             } else if (!emp.accessCode) {
                 const newCode = generateSecureAccessCode();
                 const hashedPwd = await hashPassword(newCode);
                 emp.accessCode = 'hashed_' + hashedPwd;
-                console.log(`تم إنشاء وتشفير كلمة مرور جديدة للموظف ${emp.name}`);
             }
         }
     }
     
-    // التأكد من أن كل موظف لديه كلمة مرور مشفرة
     async function ensureAllEmployeesHaveSecurePasswords() {
         let updated = false;
         for (let shop of shopsData) {
@@ -648,12 +743,10 @@
                         const hashedPwd = await hashPassword(newCode);
                         emp.accessCode = 'hashed_' + hashedPwd;
                         updated = true;
-                        console.log(`تم إنشاء كلمة مرور مشفرة للموظف ${emp.name}`);
                     } else if (!emp.accessCode.startsWith('hashed_')) {
                         const hashedPwd = await hashPassword(emp.accessCode);
                         emp.accessCode = 'hashed_' + hashedPwd;
                         updated = true;
-                        console.log(`تم تشفير كلمة المرور للموظف ${emp.name}`);
                     }
                 }
             }
@@ -661,11 +754,9 @@
         if (updated && window.firebaseDB) {
             const dbRef = window.firebaseRef(window.firebaseDB, 'shopsData');
             await window.firebaseSet(dbRef, shopsData);
-            console.log("✅ تم تحديث كلمات المرور المشفرة في Firebase");
         }
     }
     
-    // تحميل بيانات المتاجر والموظفين من Firebase
     async function loadShopsFromFirebase() {
         if (!window.firebaseDB) return null;
         try {
@@ -681,7 +772,6 @@
         }
     }
     
-    // تسجيل دخول أو خروج في Firebase (بدون عرض السجل في هذه الواجهة)
     async function saveAttendanceRecord(employeeName, branchName, type) {
         if (!window.firebaseDB) return null;
         try {
@@ -693,7 +783,6 @@
                 timestamp: now.toISOString(),
                 date: now.toLocaleDateString(currentLanguage === 'ar' ? 'ar-EG' : 'en-US'),
                 time: now.toLocaleTimeString(currentLanguage === 'ar' ? 'ar-EG' : 'en-US'),
-                // Add security metadata
                 sessionId: Date.now() + '_' + Math.random().toString(36).substring(2, 8)
             };
             const attendanceRef = window.firebaseRef(window.firebaseDB, 'attendanceRecords');
@@ -707,9 +796,66 @@
         }
     }
     
-    // دالة للحصول على البيانات الافتراضية مع كلمات مرور مشفرة
+    // دالة للاستماع إلى الملاحظات المرسلة للموظف الحالي من لوحة التحكم
+    function listenToEmployeeNotes(employeeName, branchName) {
+        if (noteUnsubscribe) {
+            try { noteUnsubscribe(); } catch(e) {}
+            noteUnsubscribe = null;
+        }
+        
+        if (!window.firebaseDB) return;
+        
+        // مسار تخزين الملاحظات في Firebase
+        const notesRef = window.firebaseRef(window.firebaseDB, 'employeeNotes');
+        
+        const handleNotesUpdate = (snapshot) => {
+            if (!snapshot.exists()) return;
+            
+            const allNotes = snapshot.val();
+            let latestNoteForEmployee = null;
+            let latestTimestamp = 0;
+            
+            // البحث عن أحدث ملاحظة موجهة لهذا الموظف في هذا الفرع
+            for (const key in allNotes) {
+                const note = allNotes[key];
+                if (note.employeeName === employeeName && note.branchName === branchName) {
+                    const noteTime = new Date(note.timestamp).getTime();
+                    if (noteTime > latestTimestamp) {
+                        latestTimestamp = noteTime;
+                        latestNoteForEmployee = note;
+                    }
+                }
+            }
+            
+            if (latestNoteForEmployee) {
+                const newNoteContent = latestNoteForEmployee.content;
+                // إذا كانت الملاحظة مختلفة عن آخر ملاحظة معروضة، نقوم بتحديث الواجهة
+                if (newNoteContent !== currentEmployeeNote) {
+                    currentEmployeeNote = newNoteContent;
+                    // تحديث حقل عرض الملاحظات في الواجهة
+                    const notesContentDiv = document.getElementById('employeeNotesContent');
+                    if (notesContentDiv) {
+                        if (currentEmployeeNote && currentEmployeeNote.trim() !== "") {
+                            notesContentDiv.innerHTML = `<div class="notes-content">${currentEmployeeNote}</div>`;
+                            notesContentDiv.classList.remove('notes-empty');
+                        } else {
+                            notesContentDiv.innerHTML = `<div class="notes-content notes-empty"><i class="fas fa-info-circle"></i> ${getText('noNotes')}</div>`;
+                            notesContentDiv.classList.add('notes-empty');
+                        }
+                    }
+                    // إظهار تنبيه للموظف بوجود ملاحظة جديدة
+                    if (latestNoteForEmployee.content && latestNoteForEmployee.content.trim() !== "") {
+                        showNoteAlert(`📋 ${getText('notesTitle')}: ${latestNoteForEmployee.content.substring(0, 50)}${latestNoteForEmployee.content.length > 50 ? '...' : ''}`);
+                    }
+                }
+            }
+        };
+        
+        window.firebaseOnValue(notesRef, handleNotesUpdate);
+        noteUnsubscribe = () => window.firebaseOnValue(notesRef, () => {});
+    }
+    
     function getDefaultShopsData() {
-        // Default plain codes (will be hashed immediately after load)
         return [
             { id: 1, name: "متجر الأندلس", icon: "fas fa-crown", desc: "أفخر التشكيلات", employees: [
                 { name: "أحمد الشجاع", entryBase: "08:30", exitBase: "16:30", entryLabel: "08:30 صباحاً", exitLabel: "04:30 مساءً", accessCode: "111111" },
@@ -720,34 +866,16 @@
             { id: 2, name: "رواد الخليج", icon: "fas fa-ship", desc: "ريادة في البحر", employees: [
                 { name: "خالد النقبي", entryBase: "07:30", exitBase: "15:30", entryLabel: "07:30 صباحاً", exitLabel: "03:30 مساءً", accessCode: "555555" },
                 { name: "لينا العتيبي", entryBase: "08:00", exitBase: "16:00", entryLabel: "08:00 صباحاً", exitLabel: "04:00 مساءً", accessCode: "666666" }
-            ]},
-            { id: 3, name: "زهور الشجاع", icon: "fas fa-leaf", desc: "طبيعة ورفاهية", employees: [
-                { name: "ريم الهاجري", entryBase: "08:00", exitBase: "16:00", entryLabel: "08:00 صباحاً", exitLabel: "04:00 مساءً", accessCode: "777777" },
-                { name: "ناصر العتيق", entryBase: "09:00", exitBase: "17:00", entryLabel: "09:00 صباحاً", exitLabel: "05:00 مساءً", accessCode: "888888" }
-            ]},
-            { id: 4, name: "الدرة بلازا", icon: "fas fa-gem", desc: "فخامة وتميز", employees: [
-                { name: "جمال السالم", entryBase: "08:15", exitBase: "16:15", entryLabel: "08:15 صباحاً", exitLabel: "04:15 مساءً", accessCode: "999999" },
-                { name: "هبة العبيد", entryBase: "09:30", exitBase: "17:30", entryLabel: "09:30 صباحاً", exitLabel: "05:30 مساءً", accessCode: "101010" }
-            ]},
-            { id: 5, name: "نخبة الشرق", icon: "fas fa-chart-line", desc: "ريادة أعمال", employees: [
-                { name: "ماجد الشهراني", entryBase: "07:00", exitBase: "15:00", entryLabel: "07:00 صباحاً", exitLabel: "03:00 مساءً", accessCode: "111111" },
-                { name: "نوال الغامدي", entryBase: "08:20", exitBase: "16:20", entryLabel: "08:20 صباحاً", exitLabel: "04:20 مساءً", accessCode: "121212" }
-            ]},
-            { id: 6, name: "قمة الشجاع", icon: "fas fa-mountain", desc: "أعلى القمم", employees: [
-                { name: "تركي العتيبي", entryBase: "08:00", exitBase: "16:00", entryLabel: "08:00 صباحاً", exitLabel: "04:00 مساءً", accessCode: "131313" },
-                { name: "جواهر القاسم", entryBase: "09:15", exitBase: "17:15", entryLabel: "09:15 صباحاً", exitLabel: "05:15 مساءً", accessCode: "141414" }
             ]}
         ];
     }
     
-    // عرض شاشة تسجيل الدخول (بدون أي رسائل خطأ مرئية)
     function renderLoginScreen() {
         if (!shopsData.length) {
             document.getElementById('appRoot').innerHTML = `<div class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i> ${getText('loading')}</div>`;
             return;
         }
         
-        // تجميع جميع الموظفين من جميع المتاجر (بدون عرض كلمات المرور)
         let allEmployees = [];
         shopsData.forEach(shop => {
             if (shop.employees && shop.employees.length) {
@@ -835,33 +963,27 @@
             const storedHashedCode = selectedOption.getAttribute('data-hashed-code');
             const enteredPassword = document.getElementById('passwordInput').value;
             
-            // أمان: التحقق من صحة البيانات بدون أي رسائل خطأ
             if (!employeeName || !branchId || !storedHashedCode || !enteredPassword) {
                 return;
             }
             
-            // تشفير كلمة المرور المدخلة ومقارنتها مع المخزنة
             const hashedEntered = 'hashed_' + await hashPassword(enteredPassword);
             
-            // مقارنة آمنة (ثابتة الزمن)
             let isValid = false;
             if (storedHashedCode && hashedEntered && storedHashedCode.length === hashedEntered.length) {
                 isValid = storedHashedCode === hashedEntered;
             }
             
             if (!isValid) {
-                // فشل تسجيل الدخول - لا رسالة خطأ للأمان
                 return;
             }
             
-            // فقط عند النجاح تظهر رسالة "تم التسجيل بنجاح"
             showSuccessMessage(getText('loginSuccess'));
             
             const shop = shopsData.find(s => s.id == branchId);
             if (shop) {
                 const employee = shop.employees.find(e => e.name === employeeName);
                 if (employee) {
-                    // تخزين معلومات الموظف بدون كلمة المرور للأمان
                     currentEmployee = { 
                         name: employee.name, 
                         branchName: branchName, 
@@ -870,15 +992,33 @@
                         exitBase: employee.exitBase
                     };
                     currentBranch = { id: branchId, name: branchName };
+                    
+                    // إعادة تعيين الملاحظة الحالية والاستماع للملاحظات الجديدة
+                    currentEmployeeNote = "";
+                    listenToEmployeeNotes(currentEmployee.name, currentBranch.name);
                     renderEmployeeDashboard();
                 }
             }
         });
     }
     
-    // عرض لوحة الموظف (بدون سجل الحضور والانصراف)
     async function renderEmployeeDashboard() {
         if (!currentEmployee) return;
+        
+        // محتوى الملاحظة المراد عرضه
+        const noteDisplayHtml = `
+            <div class="notes-display-card">
+                <div class="notes-header">
+                    <i class="fas fa-bell"></i>
+                    <span>${getText('notesTitle')}</span>
+                </div>
+                <div id="employeeNotesContent">
+                    ${(currentEmployeeNote && currentEmployeeNote.trim() !== "") ? 
+                        `<div class="notes-content">${currentEmployeeNote}</div>` : 
+                        `<div class="notes-content notes-empty"><i class="fas fa-info-circle"></i> ${getText('noNotes')}</div>`}
+                </div>
+            </div>
+        `;
         
         const html = `
             <div class="employee-dashboard">
@@ -891,6 +1031,8 @@
                         <i class="fas fa-store"></i> ${currentBranch.name}
                     </div>
                 </div>
+                
+                ${noteDisplayHtml}
                 
                 <div class="actions-buttons">
                     <button id="checkinBtn" class="action-btn checkin-btn">
@@ -924,13 +1066,17 @@
         });
         
         document.getElementById('logoutFromDashboard').addEventListener('click', () => {
+            if (noteUnsubscribe) {
+                try { noteUnsubscribe(); } catch(e) {}
+                noteUnsubscribe = null;
+            }
             currentEmployee = null;
             currentBranch = null;
+            currentEmployeeNote = "";
             renderLoginScreen();
         });
     }
     
-    // الاستماع للتغييرات في Firebase
     function listenToFirebaseChanges() {
         if (!window.firebaseDB) return;
         const shopsRef = window.firebaseRef(window.firebaseDB, 'shopsData');
@@ -941,10 +1087,15 @@
                 if (currentEmployee) {
                     const shop = shopsData.find(s => s.id == currentBranch?.id);
                     if (shop && shop.employees.some(e => e.name === currentEmployee.name)) {
-                        // الموظف لا يزال موجودًا، نبقى في الواجهة
+                        // الموظف لا يزال موجودًا
                     } else {
+                        if (noteUnsubscribe) {
+                            try { noteUnsubscribe(); } catch(e) {}
+                            noteUnsubscribe = null;
+                        }
                         currentEmployee = null;
                         currentBranch = null;
+                        currentEmployeeNote = "";
                         renderLoginScreen();
                     }
                 } else {
@@ -954,14 +1105,12 @@
         });
     }
     
-    // تهيئة التطبيق
     let appStarted = false;
     
     const startApplication = async () => {
         if (appStarted) return;
         appStarted = true;
         
-        // Set language toggle event
         const toggleBtn = document.getElementById('langToggleBtn');
         if (toggleBtn) {
             toggleBtn.addEventListener('click', toggleLanguage);
