@@ -481,6 +481,14 @@
             background: transparent;
             border-radius: 24px;
         }
+
+        .financial-modal-content {
+            background: #f1f5f9;
+            border-radius: 24px;
+            padding: 20px;
+            position: relative;
+            min-height: 100%;
+        }
         
         @media (max-width: 550px) {
             body {
@@ -506,6 +514,27 @@
                 white-space: normal;
                 max-width: 85%;
                 font-size: 0.85rem;
+            }
+
+            /* تهيئة المودال ليصبح ملء الشاشة تماماً على الهواتف */
+            .financial-modal-overlay {
+                padding: 0;
+                align-items: flex-start;
+            }
+            .financial-modal-container {
+                max-height: 100vh;
+                height: 100%;
+                border-radius: 0;
+            }
+            .financial-modal-content {
+                border-radius: 0;
+                padding: 16px 12px;
+                min-height: 100vh;
+            }
+            .financial-modal-content .container {
+                padding: 12px !important;
+                border-radius: 16px !important;
+                box-shadow: none !important;
             }
         }
         
@@ -802,7 +831,7 @@
         modal.className = 'financial-modal-overlay';
         modal.innerHTML = `
             <div class="financial-modal-container">
-                <div style="background: #f1f5f9; border-radius: 24px; padding: 20px; position: relative;">
+                <div class="financial-modal-content">
                     <button onclick="this.closest('.financial-modal-overlay').classList.remove('active')" style="position: sticky; top: 0; float: right; background: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; margin-bottom: 10px; z-index: 10;"><i class="fas fa-times"></i></button>
                     <div style="clear: both;"></div>
                     <div id="fullReportContainer"></div>
