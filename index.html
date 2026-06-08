@@ -48,7 +48,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* تثبيت التصميم بالكامل - لا تمرير أفقي ولا حركة */
         html, body {
             max-width: 100%;
             overflow-x: hidden;
@@ -74,7 +73,6 @@
             overflow-x: hidden;
         }
 
-        /* الحاوية الرئيسية ثابتة في المنتصف */
         .login-container {
             width: 100%;
             max-width: 500px;
@@ -83,7 +81,6 @@
             position: relative;
         }
 
-        /* تصميم البطاقة ثابت لا يتزعزع */
         .login-card {
             background: white;
             border-radius: 32px;
@@ -92,11 +89,8 @@
             text-align: center;
             width: 100%;
             margin: 0;
-            transition: none;
-            transform: none;
         }
         
-        /* Language switcher button */
         .lang-switcher {
             position: absolute;
             top: 20px;
@@ -123,10 +117,6 @@
         
         .lang-btn:active {
             transform: scale(0.96);
-        }
-        
-        .lang-btn i {
-            font-size: 0.9rem;
         }
         
         .logo-area {
@@ -224,7 +214,6 @@
             transform: scale(0.98);
         }
 
-        /* شاشة الموظف بعد تسجيل الدخول - مع حقل عرض الملاحظات */
         .employee-dashboard {
             background: white;
             border-radius: 32px;
@@ -273,7 +262,6 @@
             color: #4361ee;
         }
         
-        /* حقل عرض الملاحظات - بطاقة مميزة */
         .notes-display-card {
             background: linear-gradient(135deg, #fff9e6, #fff3d1);
             border-right: 5px solid #ff9800;
@@ -281,7 +269,6 @@
             padding: 14px 16px;
             margin-bottom: 20px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
         }
         
         .notes-header {
@@ -318,7 +305,6 @@
             font-size: 0.85rem;
         }
         
-        /* منطقة الأزرار فقط */
         .actions-buttons {
             display: flex;
             gap: 16px;
@@ -353,6 +339,11 @@
         
         .checkout-btn {
             background: #ef4444;
+            color: white;
+        }
+        
+        .financial-btn {
+            background: #8b5cf6;
             color: white;
         }
         
@@ -400,7 +391,6 @@
             backdrop-filter: blur(4px);
         }
         
-        /* رسالة النجاح فقط (تم التسجيل بنجاح) */
         .success-toast {
             position: fixed;
             bottom: 30px;
@@ -429,7 +419,6 @@
             transform: translateX(-50%) scale(1);
         }
         
-        /* رسالة وصول ملاحظة جديدة */
         .note-toast {
             position: fixed;
             top: 20px;
@@ -457,11 +446,42 @@
             transform: translateX(-50%) translateY(0);
         }
         
-        /* تثبيت التصميم للشاشات الصغيرة جدًا */
+        /* مودال التقرير المالي */
+        .financial-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .financial-modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .financial-modal-container {
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: transparent;
+            border-radius: 24px;
+        }
+        
         @media (max-width: 550px) {
             body {
                 padding: 12px;
-                align-items: center;
             }
             .login-card, .employee-dashboard {
                 padding: 24px 18px;
@@ -479,48 +499,13 @@
                 height: 70px;
                 font-size: 2rem;
             }
-            .welcome-name {
-                font-size: 1.2rem;
-            }
-            .action-btn {
-                padding: 14px;
-            }
             .success-toast {
                 white-space: normal;
-                text-align: center;
                 max-width: 85%;
                 font-size: 0.85rem;
-                padding: 10px 20px;
-                bottom: 20px;
-            }
-            .note-toast {
-                white-space: normal;
-                text-align: center;
-                max-width: 90%;
-                font-size: 0.75rem;
-                top: 10px;
-            }
-            .lang-switcher {
-                top: 12px;
-                right: 12px;
-            }
-            .lang-btn {
-                padding: 6px 12px;
-                font-size: 0.7rem;
             }
         }
         
-        /* منع أي انزلاق أفقي */
-        @media (max-width: 480px) {
-            .login-card, .employee-dashboard {
-                padding: 20px 16px;
-            }
-            .form-select, .form-input {
-                padding: 12px 14px;
-            }
-        }
-        
-        /* RTL support when Arabic is active */
         body[dir="rtl"] .form-group,
         body[dir="rtl"] .form-label {
             text-align: right;
@@ -529,23 +514,6 @@
         body[dir="rtl"] .lang-switcher {
             right: auto;
             left: 20px;
-        }
-        
-        body[dir="rtl"] .login-card,
-        body[dir="rtl"] .employee-dashboard {
-            text-align: right;
-        }
-        
-        body[dir="rtl"] .form-label i {
-            margin-left: 6px;
-            margin-right: 0;
-        }
-        
-        body[dir="rtl"] .login-btn i,
-        body[dir="rtl"] .action-btn i,
-        body[dir="rtl"] .logout-btn i {
-            margin-left: 8px;
-            margin-right: 0;
         }
         
         body[dir="rtl"] .actions-buttons {
@@ -566,12 +534,12 @@
             <span id="langBtnText">العربية</span>
         </button>
     </div>
-<div id="appRoot" class="login-container">
-    <div class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i> Loading data...</div>
-</div>
+    <div id="appRoot" class="login-container">
+        <div class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i> Loading data...</div>
+    </div>
 
 <script>
-    // ===================== SECURE HASHING UTILITY (SHA-256) =====================
+    // ===================== SECURE HASHING UTILITY =====================
     async function hashPassword(password) {
         const encoder = new TextEncoder();
         const data = encoder.encode(password);
@@ -581,7 +549,7 @@
         return hashHex;
     }
     
-    // ===================== Language Management (English Primary) =====================
+    // ===================== Language Management =====================
     let currentLanguage = 'en';
     
     const translations = {
@@ -595,19 +563,18 @@
             syncBadge: "Synced with Control Panel",
             loginTitle: "Login",
             loginSubtitle: "Employee Attendance System",
-            selectBranch: "-- Select Branch --",
-            loginSuccess: "Login successful",
             welcome: "Welcome",
             checkin: "Check In",
             checkout: "Check Out",
+            financialReport: "Financial Report",
             logoutSystem: "Logout from System",
-            syncFooter: "Synced with Main Dashboard",
             checkinSuccess: "Check-in successful, thank you",
             checkoutSuccess: "Check-out successful, thank you",
             langToggleAr: "العربية",
             langToggleEn: "English",
-            notesTitle: "📢 Notices & Alerts",
-            noNotes: "No new notices"
+            notesTitle: "Notices & Alerts",
+            noNotes: "No new notices",
+            reportSent: "Financial report sent successfully"
         },
         ar: {
             loading: "جاري تحميل البيانات...",
@@ -619,19 +586,18 @@
             syncBadge: "متزامن مع لوحة التحكم",
             loginTitle: "تسجيل الدخول",
             loginSubtitle: "نظام حضور وانصراف الموظفين",
-            selectBranch: "-- اختر الفرع --",
-            loginSuccess: "تم التسجيل بنجاح",
             welcome: "مرحباً",
             checkin: "تسجيل دخول",
             checkout: "تسجيل خروج",
+            financialReport: "تقرير مالي",
             logoutSystem: "تسجيل خروج من النظام",
-            syncFooter: "متزامن مع لوحة التحكم الرئيسية",
             checkinSuccess: "تم تسجيل الدخول بنجاح، شكراً لك",
             checkoutSuccess: "تم تسجيل الخروج بنجاح، شكراً لك",
             langToggleAr: "العربية",
             langToggleEn: "English",
-            notesTitle: "📢 تنبيهات وملاحظات",
-            noNotes: "لا توجد تنبيهات جديدة"
+            notesTitle: "تنبيهات وملاحظات",
+            noNotes: "لا توجد تنبيهات جديدة",
+            reportSent: "تم إرسال التقرير المالي بنجاح"
         }
     };
     
@@ -641,18 +607,9 @@
     
     function setLanguage(lang) {
         currentLanguage = lang;
-        const htmlElement = document.documentElement;
         const bodyElement = document.body;
-        
-        if (lang === 'ar') {
-            htmlElement.setAttribute('lang', 'ar');
-            bodyElement.setAttribute('dir', 'rtl');
-            document.title = "تسجيل الدخول | نظام حضور وانصراف الموظفين";
-        } else {
-            htmlElement.setAttribute('lang', 'en');
-            bodyElement.setAttribute('dir', 'ltr');
-            document.title = "Employee Attendance System | Login";
-        }
+        bodyElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+        document.documentElement.setAttribute('lang', lang);
         
         const langBtnText = document.getElementById('langBtnText');
         if (langBtnText) {
@@ -671,105 +628,39 @@
         setLanguage(newLang);
     }
     
-    // ===================== بيانات المتاجر والموظفين (من Firebase) =====================
+    // ===================== بيانات المتاجر =====================
     let shopsData = [];
     let currentEmployee = null;
     let currentBranch = null;
-    
-    // متغير لتخزين آخر ملاحظة تم عرضها للموظف الحالي
     let currentEmployeeNote = "";
     let noteUnsubscribe = null;
     
-    // دالة عرض رسالة نجاح فقط
     function showSuccessMessage(message) {
         const existingToast = document.querySelector('.success-toast');
         if (existingToast) existingToast.remove();
-        
         const toast = document.createElement('div');
         toast.className = 'success-toast';
         toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
         document.body.appendChild(toast);
-        
         setTimeout(() => toast.classList.add('show'), 10);
-        
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => toast.remove(), 300);
         }, 2000);
     }
     
-    // دالة عرض رسالة عند وصول ملاحظة جديدة
     function showNoteAlert(message) {
         const existingToast = document.querySelector('.note-toast');
         if (existingToast) existingToast.remove();
-        
         const toast = document.createElement('div');
         toast.className = 'note-toast';
         toast.innerHTML = `<i class="fas fa-bell"></i> ${message}`;
         document.body.appendChild(toast);
-        
         setTimeout(() => toast.classList.add('show'), 10);
-        
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => toast.remove(), 300);
         }, 4000);
-    }
-    
-    function generateSecureAccessCode() {
-        return Math.floor(100000 + Math.random() * 900000).toString();
-    }
-    
-    async function hashEmployeePasswords(employees) {
-        for (let emp of employees) {
-            if (emp.accessCode && !emp.accessCode.startsWith('hashed_')) {
-                const hashedPwd = await hashPassword(emp.accessCode);
-                emp.accessCode = 'hashed_' + hashedPwd;
-            } else if (!emp.accessCode) {
-                const newCode = generateSecureAccessCode();
-                const hashedPwd = await hashPassword(newCode);
-                emp.accessCode = 'hashed_' + hashedPwd;
-            }
-        }
-    }
-    
-    async function ensureAllEmployeesHaveSecurePasswords() {
-        let updated = false;
-        for (let shop of shopsData) {
-            if (shop.employees && shop.employees.length) {
-                for (let emp of shop.employees) {
-                    if (!emp.accessCode) {
-                        const newCode = generateSecureAccessCode();
-                        const hashedPwd = await hashPassword(newCode);
-                        emp.accessCode = 'hashed_' + hashedPwd;
-                        updated = true;
-                    } else if (!emp.accessCode.startsWith('hashed_')) {
-                        const hashedPwd = await hashPassword(emp.accessCode);
-                        emp.accessCode = 'hashed_' + hashedPwd;
-                        updated = true;
-                    }
-                }
-            }
-        }
-        if (updated && window.firebaseDB) {
-            const dbRef = window.firebaseRef(window.firebaseDB, 'shopsData');
-            await window.firebaseSet(dbRef, shopsData);
-        }
-    }
-    
-    async function loadShopsFromFirebase() {
-        if (!window.firebaseDB) return null;
-        try {
-            const dbRef = window.firebaseRef(window.firebaseDB, 'shopsData');
-            const snapshot = await window.firebaseGet(dbRef);
-            if (snapshot.exists()) {
-                return snapshot.val();
-            }
-            return null;
-        } catch (error) {
-            console.warn("خطأ في جلب بيانات المتاجر:", error.message);
-            return null;
-        }
     }
     
     async function saveAttendanceRecord(employeeName, branchName, type) {
@@ -788,7 +679,6 @@
             const attendanceRef = window.firebaseRef(window.firebaseDB, 'attendanceRecords');
             const newRecordRef = window.firebasePush(attendanceRef);
             await window.firebaseSet(newRecordRef, record);
-            console.log(`✅ تم تسجيل ${type} للموظف ${employeeName}`);
             return record;
         } catch (error) {
             console.warn("خطأ في تسجيل الحضور:", error.message);
@@ -796,26 +686,37 @@
         }
     }
     
-    // دالة للاستماع إلى الملاحظات المرسلة للموظف الحالي من لوحة التحكم
+    async function sendFinancialReport(reportData) {
+        if (!window.firebaseDB) return false;
+        try {
+            const reportsRef = window.firebaseRef(window.firebaseDB, 'financialReports');
+            const newReportRef = window.firebasePush(reportsRef);
+            await window.firebaseSet(newReportRef, {
+                ...reportData,
+                employeeName: currentEmployee?.name,
+                branchName: currentBranch?.name,
+                timestamp: new Date().toISOString(),
+                submittedAt: new Date().toLocaleString()
+            });
+            return true;
+        } catch (error) {
+            console.error("خطأ في إرسال التقرير:", error);
+            return false;
+        }
+    }
+    
     function listenToEmployeeNotes(employeeName, branchName) {
         if (noteUnsubscribe) {
             try { noteUnsubscribe(); } catch(e) {}
             noteUnsubscribe = null;
         }
-        
         if (!window.firebaseDB) return;
-        
-        // مسار تخزين الملاحظات في Firebase
         const notesRef = window.firebaseRef(window.firebaseDB, 'employeeNotes');
-        
         const handleNotesUpdate = (snapshot) => {
             if (!snapshot.exists()) return;
-            
             const allNotes = snapshot.val();
             let latestNoteForEmployee = null;
             let latestTimestamp = 0;
-            
-            // البحث عن أحدث ملاحظة موجهة لهذا الموظف في هذا الفرع
             for (const key in allNotes) {
                 const note = allNotes[key];
                 if (note.employeeName === employeeName && note.branchName === branchName) {
@@ -826,31 +727,24 @@
                     }
                 }
             }
-            
             if (latestNoteForEmployee) {
                 const newNoteContent = latestNoteForEmployee.content;
-                // إذا كانت الملاحظة مختلفة عن آخر ملاحظة معروضة، نقوم بتحديث الواجهة
                 if (newNoteContent !== currentEmployeeNote) {
                     currentEmployeeNote = newNoteContent;
-                    // تحديث حقل عرض الملاحظات في الواجهة
                     const notesContentDiv = document.getElementById('employeeNotesContent');
                     if (notesContentDiv) {
                         if (currentEmployeeNote && currentEmployeeNote.trim() !== "") {
                             notesContentDiv.innerHTML = `<div class="notes-content">${currentEmployeeNote}</div>`;
-                            notesContentDiv.classList.remove('notes-empty');
                         } else {
                             notesContentDiv.innerHTML = `<div class="notes-content notes-empty"><i class="fas fa-info-circle"></i> ${getText('noNotes')}</div>`;
-                            notesContentDiv.classList.add('notes-empty');
                         }
                     }
-                    // إظهار تنبيه للموظف بوجود ملاحظة جديدة
                     if (latestNoteForEmployee.content && latestNoteForEmployee.content.trim() !== "") {
-                        showNoteAlert(`📋 ${getText('notesTitle')}: ${latestNoteForEmployee.content.substring(0, 50)}${latestNoteForEmployee.content.length > 50 ? '...' : ''}`);
+                        showNoteAlert(`📋 ${getText('notesTitle')}: ${latestNoteForEmployee.content.substring(0, 50)}`);
                     }
                 }
             }
         };
-        
         window.firebaseOnValue(notesRef, handleNotesUpdate);
         noteUnsubscribe = () => window.firebaseOnValue(notesRef, () => {});
     }
@@ -868,6 +762,323 @@
                 { name: "لينا العتيبي", entryBase: "08:00", exitBase: "16:00", entryLabel: "08:00 صباحاً", exitLabel: "04:00 مساءً", accessCode: "666666" }
             ]}
         ];
+    }
+    
+    async function loadShopsFromFirebase() {
+        if (!window.firebaseDB) return null;
+        try {
+            const dbRef = window.firebaseRef(window.firebaseDB, 'shopsData');
+            const snapshot = await window.firebaseGet(dbRef);
+            if (snapshot.exists()) return snapshot.val();
+            return null;
+        } catch (error) {
+            console.warn("خطأ في جلب بيانات المتاجر:", error.message);
+            return null;
+        }
+    }
+    
+    async function ensureAllEmployeesHaveSecurePasswords() {
+        for (let shop of shopsData) {
+            if (shop.employees && shop.employees.length) {
+                for (let emp of shop.employees) {
+                    if (!emp.accessCode || !emp.accessCode.startsWith('hashed_')) {
+                        const hashedPwd = 'hashed_' + await hashPassword(emp.accessCode || "111111");
+                        emp.accessCode = hashedPwd;
+                    }
+                }
+            }
+        }
+    }
+    
+    // دالة عرض التقرير المالي كامل
+    function showFinancialReportModal() {
+        const existingModal = document.querySelector('.financial-modal-overlay');
+        if (existingModal) existingModal.remove();
+        
+        const modal = document.createElement('div');
+        modal.className = 'financial-modal-overlay';
+        modal.innerHTML = `
+            <div class="financial-modal-container">
+                <div style="background: #f1f5f9; border-radius: 24px; padding: 20px; position: relative;">
+                    <button onclick="this.closest('.financial-modal-overlay').classList.remove('active')" style="position: sticky; top: 0; float: right; background: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; margin-bottom: 10px; z-index: 10;"><i class="fas fa-times"></i></button>
+                    <div style="clear: both;"></div>
+                    <div id="fullReportContainer"></div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        // جلب نموذج التقرير كامل
+        fetchAndInjectReport();
+        
+        setTimeout(() => modal.classList.add('active'), 10);
+    }
+    
+    function fetchAndInjectReport() {
+        const container = document.getElementById('fullReportContainer');
+        if (!container) return;
+        
+        // النموذج الكامل للتقرير
+        container.innerHTML = `
+<div class="container" style="max-width:800px; margin:0 auto; background:white; border-radius:20px; padding:20px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+    <div class="header" style="text-align:center; margin-bottom:20px; padding-bottom:15px; border-bottom:2px solid #e2e8f0;">
+        <h1 style="font-size:22px; color:#0f172a;">💰 Cash Drawer Count Sheet</h1>
+        <p style="font-size:12px; color:#64748b; margin-top:5px;">Track beginning & end balances with precision</p>
+    </div>
+
+    <div class="info-row" style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+        <div class="info-field" style="flex:1; min-width:120px; background:#f8fafc; border-radius:12px; padding:8px 12px; border:1px solid #e2e8f0;">
+            <label style="display:block; font-size:11px; font-weight:700; color:#64748b; margin-bottom:4px;">Name</label>
+            <input type="text" id="report_name" value="${currentEmployee?.name || ''}" readonly style="width:100%; border:none; background:transparent; outline:none; font-weight:600; padding:4px 0;">
+        </div>
+        <div class="info-field" style="flex:1; min-width:120px; background:#f8fafc; border-radius:12px; padding:8px 12px; border:1px solid #e2e8f0;">
+            <label style="display:block; font-size:11px; font-weight:700; color:#64748b; margin-bottom:4px;">Date</label>
+            <input type="text" id="report_date" placeholder="DD/MM/YYYY" style="width:100%; border:none; background:transparent; outline:none; font-weight:600; padding:4px 0;">
+            <button class="today-btn" onclick="setReportToday()" style="background:#3b82f6; color:white; border:none; padding:6px 12px; border-radius:8px; font-size:11px; margin-top:5px; cursor:pointer;">Today</button>
+        </div>
+        <div class="info-field" style="flex:1; min-width:120px; background:#f8fafc; border-radius:12px; padding:8px 12px; border:1px solid #e2e8f0;">
+            <label style="display:block; font-size:11px; font-weight:700; color:#64748b; margin-bottom:4px;">Shift</label>
+            <div class="shift-buttons" style="display:flex; gap:8px; margin-top:5px;">
+                <div class="shift-btn" onclick="setReportShift('Morning')" style="flex:1; padding:6px; border-radius:8px; border:1px solid #cbd5e1; background:white; font-weight:600; font-size:12px; cursor:pointer; text-align:center;">Morning ☀️</div>
+                <div class="shift-btn" onclick="setReportShift('Evening')" style="flex:1; padding:6px; border-radius:8px; border:1px solid #cbd5e1; background:white; font-weight:600; font-size:12px; cursor:pointer; text-align:center;">Evening 🌙</div>
+            </div>
+            <input type="hidden" id="report_shift">
+        </div>
+    </div>
+
+    <div class="table-section" style="display:flex; flex-direction:column; gap:20px; margin-bottom:20px;">
+        <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="display:flex; flex-wrap:wrap; gap:20px;">
+                <div class="table-card" style="flex:1; background:#ffffff; border-radius:16px; border:1px solid #e2e8f0; overflow:hidden;">
+                    <div class="table-title begin" style="padding:12px 16px; font-weight:800; font-size:16px; border-bottom:2px solid #f1f5f9; color:#059669;">📥 BEGINNING</div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">100's</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="beg-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">50's</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="beg-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">20's</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="beg-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">10's</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="beg-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">5's</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="beg-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">1's</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="beg-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">Quarters</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="beg-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">Dimes</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="beg-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">Nickels</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="beg-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">Pennies</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="beg-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;"></span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="beg-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;"></span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="beg-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="total-row" style="background:#f1f5f9; margin:12px 16px; padding:10px 12px; border-radius:12px; display:flex; justify-content:space-between; font-weight:800;"><span>📌 Total Drawer</span><span><span>$</span> <input type="text" id="beg-total" placeholder="0.00" readonly style="background:white; border:1px solid #cbd5e1; border-radius:8px; padding:5px 10px; width:110px; text-align:right; font-weight:800; font-family:monospace;"></span></div>
+                </div>
+                <div class="table-card" style="flex:1; background:#ffffff; border-radius:16px; border:1px solid #e2e8f0; overflow:hidden;">
+                    <div class="table-title end" style="padding:12px 16px; font-weight:800; font-size:16px; border-bottom:2px solid #f1f5f9; color:#dc2626;">📤 END</div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">100's</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="end-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">50's</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="end-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">20's</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="end-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">10's</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="end-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">5's</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="end-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">1's</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="end-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">Quarters</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="end-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">Dimes</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="end-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">Nickels</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="end-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;">Pennies</span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="end-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;"></span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="end-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="table-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; border-bottom:1px solid #f8fafc;"><span class="table-label" style="font-weight:600; color:#475569; width:70px; font-size:13px;"></span><div class="input-group" style="display:flex; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; width:120px;"><span>$</span><input type="number" class="end-input" placeholder="0.00" step="any" style="border:none; background:transparent; outline:none; text-align:right; width:100%; font-weight:600; font-family:monospace;"></div></div>
+                    <div class="total-row" style="background:#f1f5f9; margin:12px 16px; padding:10px 12px; border-radius:12px; display:flex; justify-content:space-between; font-weight:800;"><span>📌 Total Drawer</span><span><span>$</span> <input type="text" id="end-total" placeholder="0.00" readonly style="background:white; border:1px solid #cbd5e1; border-radius:8px; padding:5px 10px; width:110px; text-align:right; font-weight:800; font-family:monospace;"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cig-section" style="background:#f8fafc; border-radius:16px; padding:16px; margin-bottom:20px; border:1px solid #e2e8f0;">
+        <div class="cig-title" style="font-weight:800; margin-bottom:12px; font-size:14px;">🚬 CIG COUNT</div>
+        <div class="cig-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px dashed #e2e8f0; flex-wrap:wrap; gap:8px;"><span class="cig-label" style="font-weight:600; color:#475569; font-size:13px;">Beginning of shift</span><input type="text" class="cig-input" id="cig-beg" placeholder="______" style="border:1px solid #e2e8f0; border-radius:10px; padding:8px 12px; width:140px; background:white; text-align:center; font-family:monospace;"></div>
+        <div class="cig-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px dashed #e2e8f0; flex-wrap:wrap; gap:8px;"><span class="cig-label" style="font-weight:600; color:#475569; font-size:13px;">1</span><input type="text" class="cig-input" id="cig-1" placeholder="______" style="border:1px solid #e2e8f0; border-radius:10px; padding:8px 12px; width:140px; background:white; text-align:center; font-family:monospace;"></div>
+        <div class="cig-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px dashed #e2e8f0; flex-wrap:wrap; gap:8px;"><span class="cig-label" style="font-weight:600; color:#475569; font-size:13px;">End of shift</span><input type="text" class="cig-input" id="cig-end" placeholder="______" style="border:1px solid #e2e8f0; border-radius:10px; padding:8px 12px; width:140px; background:white; text-align:center; font-family:monospace;"></div>
+        <div class="cig-row" style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px dashed #e2e8f0; flex-wrap:wrap; gap:8px;"><span class="cig-label" style="font-weight:600; color:#475569; font-size:13px;">2</span><input type="text" class="cig-input" id="cig-2" placeholder="______" style="border:1px solid #e2e8f0; border-radius:10px; padding:8px 12px; width:140px; background:white; text-align:center; font-family:monospace;"></div>
+        <div class="cash-debit-row" style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+            <div class="cash-debit-item" style="flex:1; background:white; border:1px solid #e2e8f0; border-radius:12px; padding:8px 12px; display:flex; align-items:center; gap:8px;"><strong style="font-size:12px;">1-CASH</strong> <input type="number" id="cig-cash" placeholder="0.00" step="any" style="border:none; border-bottom:2px solid #e2e8f0; width:80px; text-align:center; font-family:monospace; font-weight:700; background:transparent; outline:none; padding:4px;"></div>
+            <div class="cash-debit-item" style="flex:1; background:white; border:1px solid #e2e8f0; border-radius:12px; padding:8px 12px; display:flex; align-items:center; gap:8px;"><strong style="font-size:12px;">2-DEBIT</strong> <input type="number" id="cig-debit" placeholder="0.00" step="any" style="border:none; border-bottom:2px solid #e2e8f0; width:80px; text-align:center; font-family:monospace; font-weight:700; background:transparent; outline:none; padding:4px;"></div>
+            <div class="cash-debit-item" style="flex:1; background:white; border:1px solid #e2e8f0; border-radius:12px; padding:8px 12px; display:flex; align-items:center; gap:8px;"><strong style="font-size:12px;">3-TOTAL</strong> <input type="text" id="cig-total" placeholder="0.00" readonly style="border:none; border-bottom:2px solid #e2e8f0; width:80px; text-align:center; font-family:monospace; font-weight:700; background:transparent; outline:none; padding:4px;"></div>
+        </div>
+    </div>
+
+    <div class="initial-section" style="background:#f8fafc; border-radius:16px; padding:16px; margin-bottom:20px; border:1px solid #e2e8f0;">
+        <div class="cig-title" style="font-weight:800; margin-bottom:12px; font-size:14px;">📝 INITIAL</div>
+        <div class="init-row" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;"><strong>Beginning of Shift Balance</strong> <input type="text" id="init-beg" placeholder="$0.00" readonly style="border:1px solid #e2e8f0; border-radius:12px; padding:8px 12px; background:white; width:160px; text-align:right; font-family:monospace; font-weight:700;"></div>
+        <div class="init-row" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;"><strong>END OF SHIFT =</strong> <input type="text" id="init-end" placeholder="$0.00" readonly style="border:1px solid #e2e8f0; border-radius:12px; padding:8px 12px; background:white; width:160px; text-align:right; font-family:monospace; font-weight:700;"></div>
+    </div>
+
+    <div class="drawer-section" style="background:white; border-radius:16px; border:1px solid #e2e8f0; padding:16px; margin-bottom:20px;">
+        <div class="cig-title" style="font-weight:800; margin-bottom:12px; font-size:14px;">🗄️ SECOND DRAWER</div>
+        <div class="drawer-flex" style="display:flex; flex-direction:column; gap:16px;">
+            <div style="display:flex; flex-direction:column; gap:16px;">
+                <div style="display:flex; flex-wrap:wrap; gap:16px;">
+                    <div class="drawer-col" style="flex:1; background:#fafcff; border-radius:14px; padding:12px; border:1px solid #eef2ff;">
+                        <h4 style="font-size:13px; margin-bottom:12px; padding-bottom:6px; border-bottom:2px solid #e2e8f0;">🔹 Beginning of shift</h4>
+                        <div class="denom-row" style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; gap:8px;"><span class="denom-label" style="font-weight:700; width:45px; font-size:13px;">1's</span><input type="number" class="sec-beg" placeholder="0" step="any" style="border:1px solid #e2e8f0; border-radius:10px; padding:6px 10px; width:100px; text-align:right; font-family:monospace; background:white;"></div>
+                        <div class="denom-row" style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; gap:8px;"><span class="denom-label" style="font-weight:700; width:45px; font-size:13px;">5's</span><input type="number" class="sec-beg" placeholder="0" step="any" style="border:1px solid #e2e8f0; border-radius:10px; padding:6px 10px; width:100px; text-align:right; font-family:monospace; background:white;"></div>
+                        <div class="denom-row" style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; gap:8px;"><span class="denom-label" style="font-weight:700; width:45px; font-size:13px;">10's</span><input type="number" class="sec-beg" placeholder="0" step="any" style="border:1px solid #e2e8f0; border-radius:10px; padding:6px 10px; width:100px; text-align:right; font-family:monospace; background:white;"></div>
+                        <div class="denom-row" style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; gap:8px;"><span class="denom-label" style="font-weight:700; width:45px; font-size:13px;">20's</span><input type="number" class="sec-beg" placeholder="0" step="any" style="border:1px solid #e2e8f0; border-radius:10px; padding:6px 10px; width:100px; text-align:right; font-family:monospace; background:white;"></div>
+                        <div class="coin-group" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; padding-top:8px; border-top:1px solid #e2e8f0;">
+                            <div class="coin-item" style="background:white; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; display:flex; align-items:center; gap:6px; flex:1; min-width:65px; justify-content:center;"><strong style="font-size:12px;">Q</strong><input type="number" class="sec-beg" placeholder="0" step="any" style="width:45px; border:none; border-bottom:1px solid #cbd5e1; text-align:center; font-family:monospace; background:transparent; outline:none;"></div>
+                            <div class="coin-item" style="background:white; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; display:flex; align-items:center; gap:6px; flex:1; min-width:65px; justify-content:center;"><strong style="font-size:12px;">D</strong><input type="number" class="sec-beg" placeholder="0" step="any" style="width:45px; border:none; border-bottom:1px solid #cbd5e1; text-align:center; font-family:monospace; background:transparent; outline:none;"></div>
+                            <div class="coin-item" style="background:white; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; display:flex; align-items:center; gap:6px; flex:1; min-width:65px; justify-content:center;"><strong style="font-size:12px;">N</strong><input type="number" class="sec-beg" placeholder="0" step="any" style="width:45px; border:none; border-bottom:1px solid #cbd5e1; text-align:center; font-family:monospace; background:transparent; outline:none;"></div>
+                            <div class="coin-item" style="background:white; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; display:flex; align-items:center; gap:6px; flex:1; min-width:65px; justify-content:center;"><strong style="font-size:12px;">P</strong><input type="number" class="sec-beg" placeholder="0" step="any" style="width:45px; border:none; border-bottom:1px solid #cbd5e1; text-align:center; font-family:monospace; background:transparent; outline:none;"></div>
+                        </div>
+                        <div class="total-match" style="background:#f1f5f9; padding:8px 12px; border-radius:12px; display:flex; justify-content:center; align-items:center; gap:10px; margin-top:12px; font-weight:800;"><strong>TOTAL</strong> $ <input type="text" id="sec-beg-total" placeholder="0.00" readonly style="background:white; border:1px solid #cbd5e1; border-radius:8px; padding:5px 10px; width:100px; text-align:center; font-family:monospace;"></div>
+                    </div>
+                    <div class="drawer-col" style="flex:1; background:#fafcff; border-radius:14px; padding:12px; border:1px solid #eef2ff;">
+                        <h4 style="font-size:13px; margin-bottom:12px; padding-bottom:6px; border-bottom:2px solid #e2e8f0;">🔸 End of shift</h4>
+                        <div class="denom-row" style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; gap:8px;"><span class="denom-label" style="font-weight:700; width:45px; font-size:13px;">1's</span><input type="number" class="sec-end" placeholder="0" step="any" style="border:1px solid #e2e8f0; border-radius:10px; padding:6px 10px; width:100px; text-align:right; font-family:monospace; background:white;"></div>
+                        <div class="denom-row" style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; gap:8px;"><span class="denom-label" style="font-weight:700; width:45px; font-size:13px;">5's</span><input type="number" class="sec-end" placeholder="0" step="any" style="border:1px solid #e2e8f0; border-radius:10px; padding:6px 10px; width:100px; text-align:right; font-family:monospace; background:white;"></div>
+                        <div class="denom-row" style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; gap:8px;"><span class="denom-label" style="font-weight:700; width:45px; font-size:13px;">10's</span><input type="number" class="sec-end" placeholder="0" step="any" style="border:1px solid #e2e8f0; border-radius:10px; padding:6px 10px; width:100px; text-align:right; font-family:monospace; background:white;"></div>
+                        <div class="denom-row" style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; gap:8px;"><span class="denom-label" style="font-weight:700; width:45px; font-size:13px;">20's</span><input type="number" class="sec-end" placeholder="0" step="any" style="border:1px solid #e2e8f0; border-radius:10px; padding:6px 10px; width:100px; text-align:right; font-family:monospace; background:white;"></div>
+                        <div class="coin-group" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; padding-top:8px; border-top:1px solid #e2e8f0;">
+                            <div class="coin-item" style="background:white; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; display:flex; align-items:center; gap:6px; flex:1; min-width:65px; justify-content:center;"><strong style="font-size:12px;">Q</strong><input type="number" class="sec-end" placeholder="0" step="any" style="width:45px; border:none; border-bottom:1px solid #cbd5e1; text-align:center; font-family:monospace; background:transparent; outline:none;"></div>
+                            <div class="coin-item" style="background:white; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; display:flex; align-items:center; gap:6px; flex:1; min-width:65px; justify-content:center;"><strong style="font-size:12px;">D</strong><input type="number" class="sec-end" placeholder="0" step="any" style="width:45px; border:none; border-bottom:1px solid #cbd5e1; text-align:center; font-family:monospace; background:transparent; outline:none;"></div>
+                            <div class="coin-item" style="background:white; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; display:flex; align-items:center; gap:6px; flex:1; min-width:65px; justify-content:center;"><strong style="font-size:12px;">N</strong><input type="number" class="sec-end" placeholder="0" step="any" style="width:45px; border:none; border-bottom:1px solid #cbd5e1; text-align:center; font-family:monospace; background:transparent; outline:none;"></div>
+                            <div class="coin-item" style="background:white; border:1px solid #e2e8f0; border-radius:10px; padding:5px 10px; display:flex; align-items:center; gap:6px; flex:1; min-width:65px; justify-content:center;"><strong style="font-size:12px;">P</strong><input type="number" class="sec-end" placeholder="0" step="any" style="width:45px; border:none; border-bottom:1px solid #cbd5e1; text-align:center; font-family:monospace; background:transparent; outline:none;"></div>
+                        </div>
+                        <div class="total-match" style="background:#f1f5f9; padding:8px 12px; border-radius:12px; display:flex; justify-content:center; align-items:center; gap:10px; margin-top:12px; font-weight:800;"><strong>TOTAL</strong> $ <input type="text" id="sec-end-total" placeholder="0.00" readonly style="background:white; border:1px solid #cbd5e1; border-radius:8px; padding:5px 10px; width:100px; text-align:center; font-family:monospace;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="note" style="background:#fffbeb; border-left:4px solid #d97706; border-radius:12px; padding:10px 12px; margin:16px 0; font-size:11px; font-weight:600; color:#b45309;">⚠️ TOTAL MUST MATCH YOUR CASH REGISTER RECEIPT NOTE — WRITE DOWN IF OFF</div>
+    </div>
+
+    <div class="stax-section" style="background:#fffbeb; border-radius:16px; padding:16px; margin-bottom:20px; border:1px solid #fef3c7;">
+        <div class="cig-title" style="font-weight:800; margin-bottom:12px; font-size:14px;">🧾 7stax</div>
+        <div class="stax-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div class="stax-item" style="background:white; border-radius:12px; padding:8px 10px; display:flex; justify-content:space-between; align-items:center; border:1px solid #fef3c7; font-size:12px; font-weight:700;">1-100's: <input type="text" placeholder="______" style="width:65px; border:none; border-bottom:2px solid #fde68a; text-align:center; font-family:monospace; background:transparent; outline:none; padding:4px;"></div>
+            <div class="stax-item" style="background:white; border-radius:12px; padding:8px 10px; display:flex; justify-content:space-between; align-items:center; border:1px solid #fef3c7; font-size:12px; font-weight:700;">2-80's: <input type="text" placeholder="______" style="width:65px; border:none; border-bottom:2px solid #fde68a; text-align:center; font-family:monospace; background:transparent; outline:none; padding:4px;"></div>
+            <div class="stax-item" style="background:white; border-radius:12px; padding:8px 10px; display:flex; justify-content:space-between; align-items:center; border:1px solid #fef3c7; font-size:12px; font-weight:700;">3-60's: <input type="text" placeholder="______" style="width:65px; border:none; border-bottom:2px solid #fde68a; text-align:center; font-family:monospace; background:transparent; outline:none; padding:4px;"></div>
+            <div class="stax-item" style="background:white; border-radius:12px; padding:8px 10px; display:flex; justify-content:space-between; align-items:center; border:1px solid #fef3c7; font-size:12px; font-weight:700;">4-5pk100: <input type="text" placeholder="______" style="width:65px; border:none; border-bottom:2px solid #fde68a; text-align:center; font-family:monospace; background:transparent; outline:none; padding:4px;"></div>
+            <div class="stax-item" style="background:white; border-radius:12px; padding:8px 10px; display:flex; justify-content:space-between; align-items:center; border:1px solid #fef3c7; font-size:12px; font-weight:700;">5-5pak80's: <input type="text" placeholder="______" style="width:65px; border:none; border-bottom:2px solid #fde68a; text-align:center; font-family:monospace; background:transparent; outline:none; padding:4px;"></div>
+            <div class="stax-item" style="background:white; border-radius:12px; padding:8px 10px; display:flex; justify-content:space-between; align-items:center; border:1px solid #fef3c7; font-size:12px; font-weight:700;">5pk5: <input type="text" placeholder="______" style="width:65px; border:none; border-bottom:2px solid #fde68a; text-align:center; font-family:monospace; background:transparent; outline:none; padding:4px;"></div>
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 12px; font-size: 12px;">
+            <span>100's <input type="text" style="width:50px; border-bottom:1px solid #fde68a;" placeholder="___"></span>
+            <span>80's <input type="text" style="width:50px; border-bottom:1px solid #fde68a;" placeholder="___"></span>
+            <span>60's <input type="text" style="width:50px; border-bottom:1px solid #fde68a;" placeholder="___"></span>
+        </div>
+    </div>
+
+    <div class="buttons" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
+        <button class="btn btn-reset" onclick="resetReportForm()" style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 10px 24px; border-radius: 40px; font-weight: 700; cursor: pointer;">🧹 Reset Sheet</button>
+        <button class="btn btn-submit" onclick="submitReportForm()" style="background: #0f172a; color: white; padding: 10px 24px; border-radius: 40px; font-weight: 700; cursor: pointer; border: none;">📤 إرسال</button>
+    </div>
+</div>`;
+
+        // إضافة الدوال العامة للنموذج
+        window.setReportToday = function() {
+            const d = new Date();
+            const dateInput = document.getElementById('report_date');
+            if (dateInput) dateInput.value = d.toLocaleDateString('en-GB');
+        };
+        
+        window.setReportShift = function(type) {
+            const shiftInput = document.getElementById('report_shift');
+            if (shiftInput) shiftInput.value = type;
+            const btns = document.querySelectorAll('#fullReportContainer .shift-btn');
+            btns.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.innerText.includes(type === 'Morning' ? 'Morning' : 'Evening')) {
+                    btn.classList.add('active');
+                }
+            });
+        };
+        
+        window.resetReportForm = function() {
+            const container = document.getElementById('fullReportContainer');
+            if (container) {
+                container.querySelectorAll('input').forEach(inp => {
+                    if (inp.type === 'text' || inp.type === 'number') {
+                        inp.value = '';
+                    }
+                });
+                const shiftInput = document.getElementById('report_shift');
+                if (shiftInput) shiftInput.value = '';
+                const btns = document.querySelectorAll('#fullReportContainer .shift-btn');
+                btns.forEach(btn => btn.classList.remove('active'));
+            }
+        };
+        
+        window.submitReportForm = async function() {
+            const reportData = {
+                name: document.getElementById('report_name')?.value || currentEmployee?.name,
+                date: document.getElementById('report_date')?.value,
+                shift: document.getElementById('report_shift')?.value,
+                beginningTotal: document.getElementById('beg-total')?.value,
+                endingTotal: document.getElementById('end-total')?.value,
+                cigBeginning: document.getElementById('cig-beg')?.value,
+                cig1: document.getElementById('cig-1')?.value,
+                cigEnd: document.getElementById('cig-end')?.value,
+                cig2: document.getElementById('cig-2')?.value,
+                cigCash: document.getElementById('cig-cash')?.value,
+                cigDebit: document.getElementById('cig-debit')?.value,
+                cigTotal: document.getElementById('cig-total')?.value,
+                initBeg: document.getElementById('init-beg')?.value,
+                initEnd: document.getElementById('init-end')?.value,
+                secBegTotal: document.getElementById('sec-beg-total')?.value,
+                secEndTotal: document.getElementById('sec-end-total')?.value
+            };
+            
+            const success = await sendFinancialReport(reportData);
+            if (success) {
+                showSuccessMessage(getText('reportSent'));
+                const modal = document.querySelector('.financial-modal-overlay');
+                if (modal) modal.classList.remove('active');
+                setTimeout(() => {
+                    if (modal) modal.remove();
+                }, 300);
+            } else {
+                showSuccessMessage("حدث خطأ في إرسال التقرير");
+            }
+        };
+        
+        // إضافة مستمعي الأحداث للحسابات
+        setTimeout(() => {
+            function parseVal(v) { if(!v) return 0; let num = parseFloat(v); return isNaN(num) ? 0 : num; }
+            function calcBeginning() {
+                let total = 0;
+                document.querySelectorAll('#fullReportContainer .beg-input').forEach(inp => total += parseVal(inp.value));
+                const begTotal = document.getElementById('beg-total');
+                const initBeg = document.getElementById('init-beg');
+                if (begTotal) begTotal.value = total.toFixed(2);
+                if (initBeg) initBeg.value = '$' + total.toFixed(2);
+            }
+            function calcEnding() {
+                let total = 0;
+                document.querySelectorAll('#fullReportContainer .end-input').forEach(inp => total += parseVal(inp.value));
+                const endTotal = document.getElementById('end-total');
+                const initEnd = document.getElementById('init-end');
+                if (endTotal) endTotal.value = total.toFixed(2);
+                if (initEnd) initEnd.value = '$' + total.toFixed(2);
+            }
+            function calcCigTotal() {
+                let cash = parseVal(document.getElementById('cig-cash')?.value);
+                let debit = parseVal(document.getElementById('cig-debit')?.value);
+                const cigTotal = document.getElementById('cig-total');
+                if (cigTotal) cigTotal.value = (cash + debit).toFixed(2);
+            }
+            function calcSecBeg() {
+                let total = 0;
+                document.querySelectorAll('#fullReportContainer .sec-beg').forEach(inp => total += parseVal(inp.value));
+                const secBegTotal = document.getElementById('sec-beg-total');
+                if (secBegTotal) secBegTotal.value = total.toFixed(2);
+            }
+            function calcSecEnd() {
+                let total = 0;
+                document.querySelectorAll('#fullReportContainer .sec-end').forEach(inp => total += parseVal(inp.value));
+                const secEndTotal = document.getElementById('sec-end-total');
+                if (secEndTotal) secEndTotal.value = total.toFixed(2);
+            }
+            document.querySelectorAll('#fullReportContainer .beg-input').forEach(i => i.addEventListener('input', calcBeginning));
+            document.querySelectorAll('#fullReportContainer .end-input').forEach(i => i.addEventListener('input', calcEnding));
+            const cigCash = document.getElementById('cig-cash');
+            const cigDebit = document.getElementById('cig-debit');
+            if (cigCash) cigCash.addEventListener('input', calcCigTotal);
+            if (cigDebit) cigDebit.addEventListener('input', calcCigTotal);
+            document.querySelectorAll('#fullReportContainer .sec-beg').forEach(i => i.addEventListener('input', calcSecBeg));
+            document.querySelectorAll('#fullReportContainer .sec-end').forEach(i => i.addEventListener('input', calcSecEnd));
+        }, 100);
     }
     
     function renderLoginScreen() {
@@ -898,39 +1109,24 @@
         const html = `
             <div class="login-card">
                 <div class="logo-area">
-                    <div class="logo-icon">
-                        <i class="fas fa-fingerprint"></i>
-                    </div>
+                    <div class="logo-icon"><i class="fas fa-fingerprint"></i></div>
                     <div class="app-title">${getText('loginTitle')}</div>
                     <div class="app-subtitle">${getText('loginSubtitle')}</div>
                 </div>
-                
                 <div class="form-group">
                     <label class="form-label"><i class="fas fa-user"></i> ${getText('employeeLabel')}</label>
-                    <select id="employeeSelect" class="form-select">
-                        ${employeeOptions}
-                    </select>
+                    <select id="employeeSelect" class="form-select">${employeeOptions}</select>
                 </div>
-                
                 <div class="form-group">
                     <label class="form-label"><i class="fas fa-store"></i> ${getText('branchLabel')}</label>
-                    <select id="branchSelect" class="form-select" disabled>
-                        <option value="">${getText('selectBranch')}</option>
-                    </select>
+                    <select id="branchSelect" class="form-select" disabled><option value="">${getText('selectBranch')}</option></select>
                 </div>
-                
                 <div class="form-group">
                     <label class="form-label"><i class="fas fa-lock"></i> ${getText('passwordLabel')}</label>
                     <input type="password" id="passwordInput" class="form-input password-input" placeholder="••••••" autocomplete="off">
                 </div>
-                
-                <button id="loginBtn" class="login-btn">
-                    <i class="fas fa-sign-in-alt"></i> ${getText('loginBtn')}
-                </button>
-                
-                <div class="sync-badge">
-                    <i class="fas fa-cloud-upload-alt"></i> ${getText('syncBadge')}
-                </div>
+                <button id="loginBtn" class="login-btn"><i class="fas fa-sign-in-alt"></i> ${getText('loginBtn')}</button>
+                <div class="sync-badge"><i class="fas fa-cloud-upload-alt"></i> ${getText('syncBadge')}</div>
             </div>
         `;
         
@@ -943,7 +1139,6 @@
             const selectedOption = employeeSelect.options[employeeSelect.selectedIndex];
             const branchId = selectedOption.getAttribute('data-branch-id');
             const branchName = selectedOption.getAttribute('data-branch-name');
-            
             if (branchId && branchName) {
                 branchSelect.innerHTML = `<option value="${branchId}" data-branch-name="${branchName}">${branchName}</option>`;
                 branchSelect.disabled = false;
@@ -963,20 +1158,12 @@
             const storedHashedCode = selectedOption.getAttribute('data-hashed-code');
             const enteredPassword = document.getElementById('passwordInput').value;
             
-            if (!employeeName || !branchId || !storedHashedCode || !enteredPassword) {
-                return;
-            }
+            if (!employeeName || !branchId || !storedHashedCode || !enteredPassword) return;
             
             const hashedEntered = 'hashed_' + await hashPassword(enteredPassword);
+            let isValid = storedHashedCode === hashedEntered;
             
-            let isValid = false;
-            if (storedHashedCode && hashedEntered && storedHashedCode.length === hashedEntered.length) {
-                isValid = storedHashedCode === hashedEntered;
-            }
-            
-            if (!isValid) {
-                return;
-            }
+            if (!isValid) return;
             
             showSuccessMessage(getText('loginSuccess'));
             
@@ -984,16 +1171,8 @@
             if (shop) {
                 const employee = shop.employees.find(e => e.name === employeeName);
                 if (employee) {
-                    currentEmployee = { 
-                        name: employee.name, 
-                        branchName: branchName, 
-                        branchId: branchId,
-                        entryBase: employee.entryBase,
-                        exitBase: employee.exitBase
-                    };
+                    currentEmployee = { name: employee.name, branchName: branchName, branchId: branchId };
                     currentBranch = { id: branchId, name: branchName };
-                    
-                    // إعادة تعيين الملاحظة الحالية والاستماع للملاحظات الجديدة
                     currentEmployeeNote = "";
                     listenToEmployeeNotes(currentEmployee.name, currentBranch.name);
                     renderEmployeeDashboard();
@@ -1005,51 +1184,28 @@
     async function renderEmployeeDashboard() {
         if (!currentEmployee) return;
         
-        // محتوى الملاحظة المراد عرضه
         const noteDisplayHtml = `
             <div class="notes-display-card">
-                <div class="notes-header">
-                    <i class="fas fa-bell"></i>
-                    <span>${getText('notesTitle')}</span>
-                </div>
-                <div id="employeeNotesContent">
-                    ${(currentEmployeeNote && currentEmployeeNote.trim() !== "") ? 
-                        `<div class="notes-content">${currentEmployeeNote}</div>` : 
-                        `<div class="notes-content notes-empty"><i class="fas fa-info-circle"></i> ${getText('noNotes')}</div>`}
-                </div>
+                <div class="notes-header"><i class="fas fa-bell"></i><span>${getText('notesTitle')}</span></div>
+                <div id="employeeNotesContent">${(currentEmployeeNote && currentEmployeeNote.trim() !== "") ? `<div class="notes-content">${currentEmployeeNote}</div>` : `<div class="notes-content notes-empty"><i class="fas fa-info-circle"></i> ${getText('noNotes')}</div>`}</div>
             </div>
         `;
         
         const html = `
             <div class="employee-dashboard">
                 <div class="employee-header">
-                    <div class="employee-avatar">
-                        <i class="fas fa-user-circle"></i>
-                    </div>
+                    <div class="employee-avatar"><i class="fas fa-user-circle"></i></div>
                     <div class="welcome-name">${getText('welcome')} ${currentEmployee.name}</div>
-                    <div class="branch-badge">
-                        <i class="fas fa-store"></i> ${currentBranch.name}
-                    </div>
+                    <div class="branch-badge"><i class="fas fa-store"></i> ${currentBranch.name}</div>
                 </div>
-                
                 ${noteDisplayHtml}
-                
                 <div class="actions-buttons">
-                    <button id="checkinBtn" class="action-btn checkin-btn">
-                        <i class="fas fa-sign-in-alt"></i> ${getText('checkin')}
-                    </button>
-                    <button id="checkoutBtn" class="action-btn checkout-btn">
-                        <i class="fas fa-sign-out-alt"></i> ${getText('checkout')}
-                    </button>
+                    <button id="checkinBtn" class="action-btn checkin-btn"><i class="fas fa-sign-in-alt"></i> ${getText('checkin')}</button>
+                    <button id="checkoutBtn" class="action-btn checkout-btn"><i class="fas fa-sign-out-alt"></i> ${getText('checkout')}</button>
+                    <button id="financialReportBtn" class="action-btn financial-btn"><i class="fas fa-chart-line"></i> ${getText('financialReport')}</button>
                 </div>
-                
-                <button id="logoutFromDashboard" class="logout-btn">
-                    <i class="fas fa-arrow-right"></i> ${getText('logoutSystem')}
-                </button>
-                
-                <div class="sync-badge">
-                    <i class="fas fa-check-circle"></i> ${getText('syncFooter')}
-                </div>
+                <button id="logoutFromDashboard" class="logout-btn"><i class="fas fa-arrow-right"></i> ${getText('logoutSystem')}</button>
+                <div class="sync-badge"><i class="fas fa-check-circle"></i> ${getText('syncFooter')}</div>
             </div>
         `;
         
@@ -1065,11 +1221,12 @@
             showSuccessMessage(getText('checkoutSuccess'));
         });
         
+        document.getElementById('financialReportBtn').addEventListener('click', () => {
+            showFinancialReportModal();
+        });
+        
         document.getElementById('logoutFromDashboard').addEventListener('click', () => {
-            if (noteUnsubscribe) {
-                try { noteUnsubscribe(); } catch(e) {}
-                noteUnsubscribe = null;
-            }
+            if (noteUnsubscribe) { try { noteUnsubscribe(); } catch(e) {} noteUnsubscribe = null; }
             currentEmployee = null;
             currentBranch = null;
             currentEmployeeNote = "";
@@ -1086,16 +1243,10 @@
                 await ensureAllEmployeesHaveSecurePasswords();
                 if (currentEmployee) {
                     const shop = shopsData.find(s => s.id == currentBranch?.id);
-                    if (shop && shop.employees.some(e => e.name === currentEmployee.name)) {
-                        // الموظف لا يزال موجودًا
-                    } else {
-                        if (noteUnsubscribe) {
-                            try { noteUnsubscribe(); } catch(e) {}
-                            noteUnsubscribe = null;
-                        }
+                    if (!shop || !shop.employees.some(e => e.name === currentEmployee.name)) {
+                        if (noteUnsubscribe) { try { noteUnsubscribe(); } catch(e) {} noteUnsubscribe = null; }
                         currentEmployee = null;
                         currentBranch = null;
-                        currentEmployeeNote = "";
                         renderLoginScreen();
                     }
                 } else {
@@ -1106,15 +1257,12 @@
     }
     
     let appStarted = false;
-    
     const startApplication = async () => {
         if (appStarted) return;
         appStarted = true;
         
         const toggleBtn = document.getElementById('langToggleBtn');
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', toggleLanguage);
-        }
+        if (toggleBtn) toggleBtn.addEventListener('click', toggleLanguage);
         
         try {
             const savedShops = await loadShopsFromFirebase();
@@ -1127,7 +1275,6 @@
                 const dbRef = window.firebaseRef(window.firebaseDB, 'shopsData');
                 await window.firebaseSet(dbRef, shopsData);
             }
-            
             listenToFirebaseChanges();
             renderLoginScreen();
         } catch (error) {
@@ -1139,13 +1286,7 @@
     };
     
     window.addEventListener('firebaseLoginReady', startApplication);
-    
-    setTimeout(() => {
-        if (!appStarted) {
-            console.warn("تأخر Firebase، بدء التشغيل محلياً");
-            startApplication();
-        }
-    }, 3000);
+    setTimeout(() => { if (!appStarted) startApplication(); }, 3000);
 </script>
 </body>
 </html>
