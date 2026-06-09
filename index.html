@@ -780,6 +780,33 @@
             return null;
         }
     }
+
+    async function loadEmployeeAttendanceRecords(employeeName, branchName) {
+        if (!window.firebaseDB) return [];
+        try {
+            const snap = await window.firebaseGet(window.firebaseRef(window.firebaseDB, 'attendanceRecords'));
+            const records = [];
+            if (snap.exists()) {
+                const data = snap.val();
+                for (const key in data) {
+                    const record = { id: key, ...data[key] };
+                    if (record.employeeName === employeeName && record.branchName === branchName) {
+                        records.push(record);
+                    }
+                }
+            }
+            return records.sort((a, b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0));
+        } catch (error) {
+            console.warn("خطأ في قراءة سجل الحضور:", error.message);
+            return [];
+        }
+    }
+
+    async function getLastAttendanceType(employeeName, branchName) {
+        const records = await loadEmployeeAttendanceRecords(employeeName, branchName);
+        const lastRecord = records[records.length - 1];
+        return lastRecord?.type || null;
+    }
     
     async function sendFinancialReport(reportData) {
         if (!window.firebaseDB) return false;
@@ -1415,13 +1442,31 @@
         forceScrollToTop();
         
         document.getElementById('checkinBtn').addEventListener('click', async () => {
-            await saveAttendanceRecord(currentEmployee.name, currentBranch.name, 'دخول');
-            showSuccessMessage(getText('checkinSuccess'));
+            const lastType = await getLastAttendanceType(currentEmployee.name, currentBranch.name);
+            if (lastType === 'دخول') {
+                showSuccessMessage(currentLanguage === 'ar' ? 'لديك تسجيل دخول مفتوح، سجل خروج أولاً' : 'You already checked in. Please check out first');
+                return;
+            }
+            const record = await saveAttendanceRecord(currentEmployee.name, currentBranch.name, 'دخول');
+            if (record) {
+                showSuccessMessage(getText('checkinSuccess'));
+            } else {
+                showSuccessMessage(currentLanguage === 'ar' ? 'تعذر تسجيل الدخول، تحقق من الاتصال' : 'Check-in failed, please check your connection');
+            }
         });
         
         document.getElementById('checkoutBtn').addEventListener('click', async () => {
-            await saveAttendanceRecord(currentEmployee.name, currentBranch.name, 'خروج');
-            showSuccessMessage(getText('checkoutSuccess'));
+            const lastType = await getLastAttendanceType(currentEmployee.name, currentBranch.name);
+            if (lastType !== 'دخول') {
+                showSuccessMessage(currentLanguage === 'ar' ? 'لا يوجد تسجيل دخول مفتوح لتسجيل الخروج' : 'No open check-in to check out from');
+                return;
+            }
+            const record = await saveAttendanceRecord(currentEmployee.name, currentBranch.name, 'خروج');
+            if (record) {
+                showSuccessMessage(getText('checkoutSuccess'));
+            } else {
+                showSuccessMessage(currentLanguage === 'ar' ? 'تعذر تسجيل الخروج، تحقق من الاتصال' : 'Check-out failed, please check your connection');
+            }
         });
         
         document.getElementById('financialReportBtn').addEventListener('click', () => {
