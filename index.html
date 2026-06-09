@@ -1013,8 +1013,16 @@
             const btns = document.querySelectorAll('#fullReportContainer .shift-btn');
             btns.forEach(btn => {
                 btn.classList.remove('active');
+                btn.style.background = 'white';
+                btn.style.color = '#1e293b';
+                btn.style.borderColor = '#cbd5e1';
+                btn.style.boxShadow = 'none';
                 if (btn.innerText.includes(type === 'Morning' ? 'Morning' : 'Evening')) {
                     btn.classList.add('active');
+                    btn.style.background = '#4361ee';
+                    btn.style.color = 'white';
+                    btn.style.borderColor = '#4361ee';
+                    btn.style.boxShadow = '0 6px 14px rgba(67, 97, 238, 0.25)';
                 }
             });
         };
@@ -1030,28 +1038,101 @@
                 const shiftInput = document.getElementById('report_shift');
                 if (shiftInput) shiftInput.value = '';
                 const btns = document.querySelectorAll('#fullReportContainer .shift-btn');
-                btns.forEach(btn => btn.classList.remove('active'));
+                btns.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.style.background = 'white';
+                    btn.style.color = '#1e293b';
+                    btn.style.borderColor = '#cbd5e1';
+                    btn.style.boxShadow = 'none';
+                });
             }
         };
         
         window.submitReportForm = async function() {
+            const getValue = (selector) => document.querySelector(selector)?.value || '';
+            const valuesBySelector = (selector) => Array.from(document.querySelectorAll(selector)).map(input => input.value || '');
+            const begValues = valuesBySelector('#fullReportContainer .beg-input');
+            const endValues = valuesBySelector('#fullReportContainer .end-input');
+            const secBegValues = valuesBySelector('#fullReportContainer .sec-beg');
+            const secEndValues = valuesBySelector('#fullReportContainer .sec-end');
+            const staxValues = valuesBySelector('#fullReportContainer .stax-grid .stax-item input');
+            const staxBottomValues = valuesBySelector('#fullReportContainer .stax-section > div:last-of-type input');
+            const selectedShift = getValue('#report_shift');
+
+            if (!selectedShift) {
+                showSuccessMessage(currentLanguage === 'ar' ? 'الرجاء اختيار الشفت أولاً' : 'Please select a shift first');
+                return;
+            }
+
             const reportData = {
-                name: document.getElementById('report_name')?.value || currentEmployee?.name,
-                date: document.getElementById('report_date')?.value,
-                shift: document.getElementById('report_shift')?.value,
-                beginningTotal: document.getElementById('beg-total')?.value,
-                endingTotal: document.getElementById('end-total')?.value,
-                cigBeginning: document.getElementById('cig-beg')?.value,
-                cig1: document.getElementById('cig-1')?.value,
-                cigEnd: document.getElementById('cig-end')?.value,
-                cig2: document.getElementById('cig-2')?.value,
-                cigCash: document.getElementById('cig-cash')?.value,
-                cigDebit: document.getElementById('cig-debit')?.value,
-                cigTotal: document.getElementById('cig-total')?.value,
-                initBeg: document.getElementById('init-beg')?.value,
-                initEnd: document.getElementById('init-end')?.value,
-                secBegTotal: document.getElementById('sec-beg-total')?.value,
-                secEndTotal: document.getElementById('sec-end-total')?.value
+                name: getValue('#report_name') || currentEmployee?.name,
+                date: getValue('#report_date'),
+                shift: selectedShift,
+
+                beg100: begValues[0] || '',
+                beg50: begValues[1] || '',
+                beg20: begValues[2] || '',
+                beg10: begValues[3] || '',
+                beg5: begValues[4] || '',
+                beg1: begValues[5] || '',
+                begQ: begValues[6] || '',
+                begD: begValues[7] || '',
+                begN: begValues[8] || '',
+                begP: begValues[9] || '',
+                beginningTotal: getValue('#beg-total'),
+
+                end100: endValues[0] || '',
+                end50: endValues[1] || '',
+                end20: endValues[2] || '',
+                end10: endValues[3] || '',
+                end5: endValues[4] || '',
+                end1: endValues[5] || '',
+                endQ: endValues[6] || '',
+                endD: endValues[7] || '',
+                endN: endValues[8] || '',
+                endP: endValues[9] || '',
+                endingTotal: getValue('#end-total'),
+
+                cigBeginning: getValue('#cig-beg'),
+                cig1: getValue('#cig-1'),
+                cigEnd: getValue('#cig-end'),
+                cig2: getValue('#cig-2'),
+                cigCash: getValue('#cig-cash'),
+                cigDebit: getValue('#cig-debit'),
+                cigTotal: getValue('#cig-total'),
+
+                initBeg: getValue('#init-beg'),
+                initEnd: getValue('#init-end'),
+
+                secBeg1: secBegValues[0] || '',
+                secBeg5: secBegValues[1] || '',
+                secBeg10: secBegValues[2] || '',
+                secBeg20: secBegValues[3] || '',
+                secBegQ: secBegValues[4] || '',
+                secBegD: secBegValues[5] || '',
+                secBegN: secBegValues[6] || '',
+                secBegP: secBegValues[7] || '',
+                secBegTotal: getValue('#sec-beg-total'),
+
+                secEnd1: secEndValues[0] || '',
+                secEnd5: secEndValues[1] || '',
+                secEnd10: secEndValues[2] || '',
+                secEnd20: secEndValues[3] || '',
+                secEndQ: secEndValues[4] || '',
+                secEndD: secEndValues[5] || '',
+                secEndN: secEndValues[6] || '',
+                secEndP: secEndValues[7] || '',
+                secEndTotal: getValue('#sec-end-total'),
+
+                stax100: staxValues[0] || '',
+                stax80: staxValues[1] || '',
+                stax60: staxValues[2] || '',
+                stax5pk100: staxValues[3] || '',
+                stax5pk80: staxValues[4] || '',
+                stax5pk5: staxValues[5] || '',
+                staxBot100: staxBottomValues[0] || '',
+                staxBot80: staxBottomValues[1] || '',
+                staxBot60: staxBottomValues[2] || ''
             };
             
             const success = await sendFinancialReport(reportData);
@@ -1324,4 +1405,3 @@
 </script>
 </body>
 </html>
-
