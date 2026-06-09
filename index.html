@@ -75,9 +75,22 @@
             overflow-x: hidden;
         }
 
+        body.report-page-mode {
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
         .login-container {
             width: 100%;
             max-width: 500px;
+            margin: 0 auto;
+            padding: 0;
+            position: relative;
+        }
+
+        .report-page-root {
+            width: 100%;
+            max-width: 920px;
             margin: 0 auto;
             padding: 0;
             position: relative;
@@ -489,6 +502,49 @@
             position: relative;
             min-height: 100%;
         }
+
+        .financial-report-page {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            background: #f1f5f9;
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+
+        .report-page-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: #f1f5f9;
+            padding-bottom: 8px;
+        }
+
+        .report-page-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .report-back-btn {
+            background: white;
+            border: 1px solid #e2e8f0;
+            color: #1e293b;
+            min-width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
         
         @media (max-width: 550px) {
             body {
@@ -531,10 +587,17 @@
                 padding: 16px 12px;
                 min-height: 100vh;
             }
-            .financial-modal-content .container {
+            .financial-modal-content .container,
+            .financial-report-page .container {
                 padding: 12px !important;
                 border-radius: 16px !important;
                 box-shadow: none !important;
+            }
+            .financial-report-page {
+                padding: 12px;
+                border-radius: 0;
+                min-height: 100vh;
+                box-shadow: none;
             }
         }
         
@@ -823,27 +886,49 @@
     }
     
     // دالة عرض التقرير المالي كامل
+    function forceScrollToTop() {
+        const run = () => {
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            const root = document.getElementById('appRoot');
+            if (root) root.scrollTop = 0;
+            const reportPage = document.querySelector('.financial-report-page');
+            if (reportPage) reportPage.scrollTop = 0;
+        };
+
+        run();
+        requestAnimationFrame(run);
+        setTimeout(run, 50);
+        setTimeout(run, 200);
+    }
+
     function showFinancialReportModal() {
-        const existingModal = document.querySelector('.financial-modal-overlay');
-        if (existingModal) existingModal.remove();
-        
-        const modal = document.createElement('div');
-        modal.className = 'financial-modal-overlay';
-        modal.innerHTML = `
-            <div class="financial-modal-container">
-                <div class="financial-modal-content">
-                    <button onclick="this.closest('.financial-modal-overlay').classList.remove('active')" style="position: sticky; top: 0; float: right; background: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; margin-bottom: 10px; z-index: 10;"><i class="fas fa-times"></i></button>
-                    <div style="clear: both;"></div>
-                    <div id="fullReportContainer"></div>
+        renderFinancialReportPage();
+    }
+
+    function renderFinancialReportPage() {
+        if (!currentEmployee) return;
+
+        document.body.classList.add('report-page-mode');
+        const root = document.getElementById('appRoot');
+        root.className = 'report-page-root';
+        root.innerHTML = `
+            <div class="financial-report-page">
+                <div class="report-page-topbar">
+                    <button id="backFromFinancialReportBtn" class="report-back-btn" title="رجوع"><i class="fas fa-arrow-left"></i></button>
+                    <div class="report-page-title"><i class="fas fa-chart-line"></i> ${getText('financialReport')}</div>
+                    <div style="width:42px;"></div>
                 </div>
+                <div id="fullReportContainer"></div>
             </div>
         `;
-        document.body.appendChild(modal);
-        
-        // جلب نموذج التقرير كامل
+
         fetchAndInjectReport();
-        
-        setTimeout(() => modal.classList.add('active'), 10);
+        document.getElementById('backFromFinancialReportBtn').addEventListener('click', () => {
+            renderEmployeeDashboard();
+        });
+        forceScrollToTop();
     }
     
     function fetchAndInjectReport() {
@@ -1138,11 +1223,9 @@
             const success = await sendFinancialReport(reportData);
             if (success) {
                 showSuccessMessage(getText('reportSent'));
-                const modal = document.querySelector('.financial-modal-overlay');
-                if (modal) modal.classList.remove('active');
                 setTimeout(() => {
-                    if (modal) modal.remove();
-                }, 300);
+                    renderEmployeeDashboard();
+                }, 500);
             } else {
                 showSuccessMessage("حدث خطأ في إرسال التقرير");
             }
@@ -1197,6 +1280,8 @@
     }
     
     function renderLoginScreen() {
+        document.body.classList.remove('report-page-mode');
+        document.getElementById('appRoot').className = 'login-container';
         if (!shopsData.length) {
             document.getElementById('appRoot').innerHTML = `<div class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i> ${getText('loading')}</div>`;
             return;
@@ -1298,6 +1383,8 @@
     
     async function renderEmployeeDashboard() {
         if (!currentEmployee) return;
+        document.body.classList.remove('report-page-mode');
+        document.getElementById('appRoot').className = 'login-container';
         
         const noteDisplayHtml = `
             <div class="notes-display-card">
@@ -1325,6 +1412,7 @@
         `;
         
         document.getElementById('appRoot').innerHTML = html;
+        forceScrollToTop();
         
         document.getElementById('checkinBtn').addEventListener('click', async () => {
             await saveAttendanceRecord(currentEmployee.name, currentBranch.name, 'دخول');
